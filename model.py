@@ -12,11 +12,16 @@ class User(db.Model):
                         primary_key = True, 
                         autoincrement = True)
 
-    fname = db.Column(db.String(25))
+    fname = db.Column(db.String(25),nullable=False)
     lname = db.Column(db.String(25))
-    email = db.Column(db.String, unique = True)
-    password = db.Column(db.String(25))
-    phone_number = db.Column(db.Integer , unique = True)
+    email = db.Column(db.String, unique = True,nullable=False)
+    password = db.Column(db.String(25),nullable=False)
+    phone_number = db.Column(db.Integer , unique = True,nullable=False)
+    # to set any default parameters put default = xyz
+
+    notes = db.relationship("Note")
+    job_completed_applications = db.relationship("JobCompletedApplication")
+
 
 
     def __repr__(self):
@@ -29,16 +34,21 @@ class JobDetail(db.Model):
     job_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    company_name = db.Column(db.String(50))
-    job_position_title = db.Column(db.String(25))
+    company_name = db.Column(db.String(50),nullable=False)
+    job_position_title = db.Column(db.String(25), db.ForeignKey('job_postions.job_position_id'),nullable=False)
     application_deadline = db.Column(db.DateTime)
     job_listing_url = db.Column(db.String(25))
-    application_status = db.Column(db.String(25))
-    location = db.Column(db.String(25))
+    application_status = db.Column(db.String(25),db.ForeignKey('application_states.application_state_id') )
+    location = db.Column(db.String(25), db.ForeignKey('locations.location_id'))
     application_listed = db.Column(db.DateTime)
     salary = db.Column(db.String(25))
 
 
+    job_completed_applications = db.relationship("JobCompletedApplication")
+
+    job_position = db.relationship("JobPosition")
+    application_state =db.relationship("ApplicationState")
+    location = db.relationship("Location")
 
 
     def __repr__(self):
@@ -53,11 +63,15 @@ class Note(db.Model):
     note_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    job_applied_id = db.Column(db.Integer)
-    user_id = db.Column(db.Integer)
+    job_applied_id = db.Column(db.Integer , db.ForeignKey('job_completed_applications.job_applied_id'))
+    user_id = db.Column(db.Integer,db.ForeignKey('users.user_id'))
     note_title = db.Column(db.String(100))
     note_text = db.Column(db.Text)
     note_date_created = db.Column(db.DateTime)
+
+    job_completed_application = db.relationship("JobCompletedApplication")
+    user = db.relationship("User")
+
 
 
     def __repr__(self):
@@ -74,14 +88,20 @@ class JobCompletedApplication(db.Model):
     job_applied_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    user_id = db.Column(db.Integer)
-    job_id = db.Column(db.Integer,unique = True)
-    application_date_submitted = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    job_id = db.Column(db.Integer,db.ForeignKey('job_details.job_id') ,unique = True)
+    application_date_submitted = db.Column(db.DateTime ,nullable=False)
+
+    notes = db.relationship("Note")
+
+    user = db.relationship("User")
+    job_detail = db.relationship("JobDetail")
+
 
     def __repr__(self):
         return f'<JobCompletedApplication job_applied_id = {self.job_applied_id}|| user_id = {self.user_id} || job_id = {self.job_id} ||application_date_submitted = {self.application_date_submitted} >'
 
-
+    
 
 class ApplicationState(db.Model):
     """ Job Application Status """
@@ -90,7 +110,9 @@ class ApplicationState(db.Model):
     application_state_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    state_name = db.Column(db.String(25), unique = True)                    
+    state_name = db.Column(db.String(25), unique = True)
+
+    job_details = db.relationship("JobDetails")                    
 
 
 
@@ -109,6 +131,8 @@ class JobPosition(db.Model):
                         autoincrement = True)
     job_position = db.Column(db.String(25))
 
+    job_details = db.relationship("JobDetails")
+
 
     def __repr__(self):
         return f'<JobPosition job_position_id = {self.job_position_id} job_position = {self.job_position}>'
@@ -123,8 +147,10 @@ class Location(db.Model):
     location_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    state = db.Column(db.String(2),unique = True)
+    state = db.Column(db.String(2),unique = True ,nullable=False)
     city = db.Column(db.String(25),unique = True)
+
+    job_details = db.relationship("JobDetails")
 
 
     def __repr__(self):
