@@ -14,18 +14,18 @@ class User(db.Model):
 
     fname = db.Column(db.String(25),nullable=False)
     lname = db.Column(db.String(25))
-    email = db.Column(db.String, unique = True,nullable=False)
+    email = db.Column(db.Text, unique = True,nullable=False)
     password = db.Column(db.String(25),nullable=False)
     phone_number = db.Column(db.Integer , unique = True,nullable=False)
     # to set any default parameters put default = xyz
 
-    notes = db.relationship("Note")
-    job_completed_applications = db.relationship("JobCompletedApplication")
+    user_notes = db.relationship("Note")
+    user_job_completed_applications = db.relationship("JobCompletedApplication")
 
 
 
     def __repr__(self):
-        return f'<User user_id = {self.user_id} email = {self.email}>'
+        return f'<User user_id = {self.user_id} || email = {self.email} || Name = {self.fname} {self.lname}>'
 
 class JobDetail(db.Model):
     """ Job Application Details"""
@@ -35,11 +35,11 @@ class JobDetail(db.Model):
                         primary_key = True, 
                         autoincrement = True)
     company_name = db.Column(db.String(50),nullable=False)
-    job_position_title = db.Column(db.String(25), db.ForeignKey('job_postions.job_position_id'),nullable=False)
+    job_position_id = db.Column(db.Integer, db.ForeignKey('job_postions.job_position_id'),nullable=False)
     application_deadline = db.Column(db.DateTime)
-    job_listing_url = db.Column(db.String(25))
-    application_status = db.Column(db.String(25),db.ForeignKey('application_states.application_state_id') )
-    location = db.Column(db.String(25), db.ForeignKey('locations.location_id'))
+    job_listing_url = db.Column(db.Text)
+    application_state_id = db.Column(db.Integer,db.ForeignKey('application_states.application_state_id') )
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
     application_listed = db.Column(db.DateTime)
     salary = db.Column(db.String(25))
 
@@ -52,7 +52,7 @@ class JobDetail(db.Model):
 
 
     def __repr__(self):
-        return f'<JobDetail job_id = {self.user_id} || company_name = {self.company_name} || job_position_title = {self.job_position_title} >'
+        return f'<JobDetail job_id = {self.job_id} || company_name = {self.company_name} || job_position_id = {self.job_position_id} >'
 
 
 
@@ -69,13 +69,13 @@ class Note(db.Model):
     note_text = db.Column(db.Text)
     note_date_created = db.Column(db.DateTime)
 
-    job_completed_application = db.relationship("JobCompletedApplication")
-    user = db.relationship("User")
+    note_job_completed_application = db.relationship("JobCompletedApplication")
+    note_user = db.relationship("User")
 
 
 
     def __repr__(self):
-        return f'< Notes notes_id = {self.notes_id}|| User user_id = {self.user_id} || job_applied_id = {self.job_applied_id} || notes_text = {self.notes_text} >'
+        return f'< Notes notes_id = {self.note_id}|| User user_id = {self.user_id} || job_applied_id = {self.job_applied_id} || notes_title = {self.note_title} || notes_text = {self.note_text} >'
 
 
 
@@ -92,10 +92,10 @@ class JobCompletedApplication(db.Model):
     job_id = db.Column(db.Integer,db.ForeignKey('job_details.job_id') ,unique = True)
     application_date_submitted = db.Column(db.DateTime ,nullable=False)
 
-    notes = db.relationship("Note")
+    job_completed_notes = db.relationship("Note")
 
-    user = db.relationship("User")
-    job_detail = db.relationship("JobDetail")
+    job_completed_user = db.relationship("User")
+    job_completed_detail = db.relationship("JobDetail")
 
 
     def __repr__(self):
@@ -112,7 +112,7 @@ class ApplicationState(db.Model):
                         autoincrement = True)
     state_name = db.Column(db.String(25), unique = True)
 
-    job_details = db.relationship("JobDetails")                    
+    app_state_job_details = db.relationship("JobDetail")                    
 
 
 
@@ -131,7 +131,7 @@ class JobPosition(db.Model):
                         autoincrement = True)
     job_position = db.Column(db.String(25))
 
-    job_details = db.relationship("JobDetails")
+    position_job_details = db.relationship("JobDetail")
 
 
     def __repr__(self):
@@ -150,7 +150,7 @@ class Location(db.Model):
     state = db.Column(db.String(2),unique = True ,nullable=False)
     city = db.Column(db.String(25),unique = True)
 
-    job_details = db.relationship("JobDetails")
+    location_job_details = db.relationship("JobDetail")
 
 
     def __repr__(self):
