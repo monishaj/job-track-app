@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}View User Job Application{% endblock %}
+{% block header %}
+
+  <nav class="Navigation">
+    <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/profile">profile</a></li>
+    </ul>
+  </nav>
+
+{% endblock %}
+{% block body %} 
+    <h3>Hi {{ session['first_name']}}</h3> 
+    <h2>Your Job Application</h2> 
+    <div>
+      
+    </div> 
+{% endblock %}

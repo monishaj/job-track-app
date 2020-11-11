@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}View User Job Application{% endblock %}
+{% block header %}
+
+  <nav class="Navigation">
+    <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/profile">profile</a></li>
+    </ul>
+  </nav>
+
+{% endblock %}
+{% block body %} 
+    <h3>Hi {{ session['first_name']}}</h3> 
+    <h2>Create Job Application</h2>
+    <div>
+        <h1>Enter Job Information</h1>
+        <form action="/view/create-job-application" method="POST">
+            <p>Company Name <input type="text" name="company_name"></p>
+            <p>Job Title <input type="text" name="job_title"></p>
+            <p>Deadline <input type="text" name="deadline"></p>
+            <p>Listing url <input type="text" name="listing_url"></p>
+            <p>Listing date <input type="text" name="listing_date"></p>
+            <p>Salary <select name="salary">
+               <option value = "30,000-50,000">30,000-50,000</option>
+               <option value = "50,000-70,000">50,000-70,000</option>
+               <option value = "70,000-90,000">70,000-90,000</option>
+               <option value = "90,000-110,000">90,000-110,000</option>
+               <option value = "110,000-130,000">110,000-130,000</option>
+               <option value = "130,000-150,000">130,000-150,000</option>
+               <option value = "150,000-170,000">150,000-170,000</option>
+               <option value = "170,000-190,000">170,000-190,000</option>
+               <option value = "190,000-250,000">190,000-250,000</option>
+               <option value = "250,000-300,000">250,000-300,000</option>
+               </select> 
+            </p>
+            <p>Application State <select name="application_state">
+                <option value = "applied">Applied</option>
+                <option value = "phone_interview">phone_interview</option>
+                <option value = "onsite_interview">onsite_interview</option>
+                <option value = "rejected">rejected</option>
+                <option value = "offer">offer</option>
+                </select> 
+             </p>
+            <p>Location <br>
+            <label>State</label>
+            <input type="text" name="state">
+            <label>City</label>
+            <input type="text" name="city">
+            </p>
+            <p>
+
+            <p><label>Note</label><br>
+                <label> Enter Note Title</label>
+                <input type="text" name="note_title"><br>
+                <label>Enter Note text</label>
+                <textarea name = "note_text"></textarea>
+                </p>
+              <input type="submit">
+            </p>
+          </form>
+    </div>  
+{% endblock %}

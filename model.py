@@ -1,28 +1,34 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
 class User(db.Model):
     """A user."""
-
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
 
-    fname = db.Column(db.String(25),nullable=False)
-    lname = db.Column(db.String(25))
+    fname = db.Column(db.String(50),nullable=False)
+    lname = db.Column(db.String(50))
     email = db.Column(db.Text, unique = True,nullable=False)
-    password = db.Column(db.String(25),nullable=False)
-    phone_number = db.Column(db.Integer , unique = True,nullable=False)
+    password = db.Column(db.String(200),nullable=False)
+    phone_number = db.Column(db.BigInteger ,nullable=False)
     # to set any default parameters put default = xyz
 
     user_notes = db.relationship("Note")
     user_job_completed_applications = db.relationship("JobCompletedApplication")
 
 
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return f'<User user_id = {self.user_id} || email = {self.email} || Name = {self.fname} {self.lname}>'
@@ -35,7 +41,7 @@ class JobDetail(db.Model):
                         primary_key = True, 
                         autoincrement = True)
     company_name = db.Column(db.String(50),nullable=False)
-    job_position_id = db.Column(db.Integer, db.ForeignKey('job_postions.job_position_id'),nullable=False)
+    job_title_id = db.Column(db.Integer, db.ForeignKey('job_titles.job_title_id'),nullable=False)
     application_deadline = db.Column(db.DateTime)
     job_listing_url = db.Column(db.Text)
     application_state_id = db.Column(db.Integer,db.ForeignKey('application_states.application_state_id') )
@@ -46,13 +52,13 @@ class JobDetail(db.Model):
 
     job_completed_applications = db.relationship("JobCompletedApplication")
 
-    job_position = db.relationship("JobPosition")
+    job_title = db.relationship("JobTitle")
     application_state =db.relationship("ApplicationState")
     location = db.relationship("Location")
 
 
     def __repr__(self):
-        return f'<JobDetail job_id = {self.job_id} || company_name = {self.company_name} || job_position_id = {self.job_position_id} >'
+        return f'<JobDetail job_id = {self.job_id} || company_name = {self.company_name} || job_title_id = {self.job_title_id} >'
 
 
 
@@ -121,40 +127,54 @@ class ApplicationState(db.Model):
 
 
 
-class JobPosition(db.Model):
+class JobTitle(db.Model):
     """ Job Application Positions"""
+    __tablename__ = 'job_titles'
 
-    __tablename__ = 'job_postions'
-
-    job_position_id = db.Column(db.Integer,
+    job_title_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    job_position = db.Column(db.String(25))
+    job_title = db.Column(db.String(100))
 
     position_job_details = db.relationship("JobDetail")
 
 
     def __repr__(self):
-        return f'<JobPosition job_position_id = {self.job_position_id} job_position = {self.job_position}>'
+        return f'<JobPosition job_title_id = {self.job_title_id} job_title = {self.job_title}>'
 
 
 
 class Location(db.Model):
     """ Job Application Location"""
-
     __tablename__ = 'locations'
 
     location_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    state = db.Column(db.String(2),unique = True ,nullable=False)
-    city = db.Column(db.String(25),unique = True)
+    state = db.Column(db.String(100),unique = True ,nullable=False)
+    city = db.Column(db.String(100),unique = True)
 
     location_job_details = db.relationship("JobDetail")
 
 
     def __repr__(self):
         return f'<Location location_id = {self.location_id} || state = {self.state} || city = {self.city} >'
+
+class ApplicationProgress(db.Model):
+    """ Job Application state progress"""
+
+    __tablename__ = 'application_progress'
+    app_progress_id = db.Column(db.Integer,
+                        primary_key = True, 
+                        autoincrement = True)
+    application_state_id = db.Column(db.Integer,db.ForeignKey('application_states.application_state_id') )
+    job_applied_id = db.Column(db.Integer , db.ForeignKey('job_completed_applications.job_applied_id'))
+    created_at = db.Column(db.DateTime)
+
+    application_state_progress =db.relationship("ApplicationState")
+    progress_job_completed_application = db.relationship("JobCompletedApplication")
+
+
 
 # class JobDescription(db.Model):
 #     """ Job Description Details"""
@@ -172,13 +192,13 @@ class Location(db.Model):
 #         return f'<JobDescription job_description_id = {self.job_description_id} || user_id = {self.user_id} ||job_applied_id = {self.job_applied_id} ||job_description_text = {self.job_description_text} >'
 
 
-def connect_to_db(flask_app, db_uri='postgresql:///job-track-app', echo=True):
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    flask_app.config['SQLALCHEMY_ECHO'] = echo
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def connect_to_db(app, db_uri='postgresql:///job-track-app', echo=True):
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_ECHO'] = echo
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.app = flask_app
-    db.init_app(flask_app)
+    db.app = app
+    db.init_app(app)
 
     print('Connected to the db!')
 
@@ -191,3 +211,4 @@ if __name__ == '__main__':
     # query it executes.
 
     connect_to_db(app)
+    db.create_all()

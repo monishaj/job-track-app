@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Home Page{% endblock %}
+
+
+{% block header %} 
+
+    <nav class="Navigation">
+      <a href="/about">About</a>
+      <a href="/demo">Demo</a>
+    </nav>
+{% endblock %}
+{% block body %} 
+  <h1>Stay Organized and Increase Productivity</h1>  
+  <div>
+    <img src="/static/img/search.jpg" alt="Woman using a Laptop">
+  </div>
+  <div>
+  <h2>Sign Up</h2>
+  <form action="/" method="POST">
+    <p>First Name <input type="text" name="fname"></p>
+    <p>Last Name <input type="text" name="lname"></p>
+    <p>Email <input type="text" name="email"></p>
+    <p>Password <input type="password" name="password"></p>
+    <p>Phone Number <input type="text" name="phone_number"></p>
+    <p>
+      <input type="submit">
+    </p>
+  </form>
+  </div>
+  <div>
+      <h3>Organizing and tracking job application has never been so easy. With Job Track App you can stay on top of your next career challenge while we do the heavy lifting of systematizing job applications for you so that you can focus more on what is important.  </h3>
+  </div>
+{% endblock %}
