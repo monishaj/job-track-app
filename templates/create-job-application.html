@@ -6,22 +6,23 @@
   <nav class="Navigation">
     <ul>
         <li><a href="/about">About</a></li>
-        <li><a href="/profile">profile</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/view-job-application">View Job Application</a></li>
     </ul>
   </nav>
 
 {% endblock %}
 {% block body %} 
-    <h3>Hi {{ session['first_name']}}</h3> 
+    <!-- <h3>Hi {{ session['first_name']}}</h3>  -->
     <h2>Create Job Application</h2>
     <div>
-        <h1>Enter Job Information</h1>
-        <form action="/view/create-job-application" method="POST">
+        <h3>Enter Job Information</h3>
+        <form action="/create-job-application" method="POST">
             <p>Company Name <input type="text" name="company_name"></p>
             <p>Job Title <input type="text" name="job_title"></p>
-            <p>Deadline <input type="text" name="deadline"></p>
+            <p>Deadline <input class="dates" type="datetime-local" name="deadline"></p>
             <p>Listing url <input type="text" name="listing_url"></p>
-            <p>Listing date <input type="text" name="listing_date"></p>
+            <p>Listing date <input class="dates" type="datetime-local" name="listing_date"></p>
             <p>Salary <select name="salary">
                <option value = "30,000-50,000">30,000-50,000</option>
                <option value = "50,000-70,000">50,000-70,000</option>
@@ -36,11 +37,11 @@
                </select> 
             </p>
             <p>Application State <select name="application_state">
-                <option value = "applied">Applied</option>
-                <option value = "phone_interview">phone_interview</option>
-                <option value = "onsite_interview">onsite_interview</option>
-                <option value = "rejected">rejected</option>
-                <option value = "offer">offer</option>
+                <option value = "Applied">Applied</option>
+                <option value = "Phone-interview">Phone-interview</option>
+                <option value = "Onsite-interview">Onsite-interview</option>
+                <option value = "Rejected">Rejected</option>
+                <option value = "Offer">Offer</option>
                 </select> 
              </p>
             <p>Location <br>

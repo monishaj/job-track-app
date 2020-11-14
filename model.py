@@ -3,7 +3,6 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
-
 class User(db.Model):
     """A user."""
     __tablename__ = 'users'
@@ -41,25 +40,18 @@ class JobDetail(db.Model):
                         primary_key = True, 
                         autoincrement = True)
     company_name = db.Column(db.String(50),nullable=False)
-    job_title_id = db.Column(db.Integer, db.ForeignKey('job_titles.job_title_id'),nullable=False)
+    job_title = db.Column(db.String,nullable=False)
     application_deadline = db.Column(db.DateTime)
     job_listing_url = db.Column(db.Text)
-    application_state_id = db.Column(db.Integer,db.ForeignKey('application_states.application_state_id') )
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
+    state = db.Column(db.String,nullable=False)
+    city = db.Column(db.String)
     application_listed = db.Column(db.DateTime)
     salary = db.Column(db.String(25))
 
-
     job_completed_applications = db.relationship("JobCompletedApplication")
 
-    job_title = db.relationship("JobTitle")
-    application_state =db.relationship("ApplicationState")
-    location = db.relationship("Location")
-
-
     def __repr__(self):
-        return f'<JobDetail job_id = {self.job_id} || company_name = {self.company_name} || job_title_id = {self.job_title_id} >'
-
+        return f'<JobDetail job_id = {self.job_id} || company_name = {self.company_name} || job_title = {self.job_title} >'
 
 
 class Note(db.Model):
@@ -78,18 +70,13 @@ class Note(db.Model):
     note_job_completed_application = db.relationship("JobCompletedApplication")
     note_user = db.relationship("User")
 
-
-
     def __repr__(self):
         return f'< Notes notes_id = {self.note_id}|| User user_id = {self.user_id} || job_applied_id = {self.job_applied_id} || notes_title = {self.note_title} || notes_text = {self.note_text} >'
-
-
 
 
 class JobCompletedApplication(db.Model):
     """ Job Application Completed Details"""
     __tablename__ = 'job_completed_applications'
-
 
     job_applied_id = db.Column(db.Integer,
                         primary_key = True, 
@@ -102,63 +89,11 @@ class JobCompletedApplication(db.Model):
 
     job_completed_user = db.relationship("User")
     job_completed_detail = db.relationship("JobDetail")
-
+    job_application_progress = db.relationship("ApplicationProgress")
 
     def __repr__(self):
         return f'<JobCompletedApplication job_applied_id = {self.job_applied_id}|| user_id = {self.user_id} || job_id = {self.job_id} ||application_date_submitted = {self.application_date_submitted} >'
 
-    
-
-class ApplicationState(db.Model):
-    """ Job Application Status """
-    __tablename__ = 'application_states'
-
-    application_state_id = db.Column(db.Integer,
-                        primary_key = True, 
-                        autoincrement = True)
-    state_name = db.Column(db.String(25), unique = True)
-
-    app_state_job_details = db.relationship("JobDetail")                    
-
-
-
-    def __repr__(self):
-        return f'<ApplicationState application_state_id = {self.application_state_id} state_name = {self.state_name}>'
-
-
-
-class JobTitle(db.Model):
-    """ Job Application Positions"""
-    __tablename__ = 'job_titles'
-
-    job_title_id = db.Column(db.Integer,
-                        primary_key = True, 
-                        autoincrement = True)
-    job_title = db.Column(db.String(100))
-
-    position_job_details = db.relationship("JobDetail")
-
-
-    def __repr__(self):
-        return f'<JobPosition job_title_id = {self.job_title_id} job_title = {self.job_title}>'
-
-
-
-class Location(db.Model):
-    """ Job Application Location"""
-    __tablename__ = 'locations'
-
-    location_id = db.Column(db.Integer,
-                        primary_key = True, 
-                        autoincrement = True)
-    state = db.Column(db.String(100),unique = True ,nullable=False)
-    city = db.Column(db.String(100),unique = True)
-
-    location_job_details = db.relationship("JobDetail")
-
-
-    def __repr__(self):
-        return f'<Location location_id = {self.location_id} || state = {self.state} || city = {self.city} >'
 
 class ApplicationProgress(db.Model):
     """ Job Application state progress"""
@@ -167,29 +102,14 @@ class ApplicationProgress(db.Model):
     app_progress_id = db.Column(db.Integer,
                         primary_key = True, 
                         autoincrement = True)
-    application_state_id = db.Column(db.Integer,db.ForeignKey('application_states.application_state_id') )
+    application_state = db.Column(db.String)
     job_applied_id = db.Column(db.Integer , db.ForeignKey('job_completed_applications.job_applied_id'))
     created_at = db.Column(db.DateTime)
 
-    application_state_progress =db.relationship("ApplicationState")
     progress_job_completed_application = db.relationship("JobCompletedApplication")
 
-
-
-# class JobDescription(db.Model):
-#     """ Job Description Details"""
-#     __tablename__ = 'job_descriptions'
-
-#     job_description_id = db.Column(db.Integer,
-#                         primary_key = True, 
-#                         autoincrement = True)
-#     job_applied_id = db.Column(db.Integer)
-#     user_id = db.Column(db.Integer)
-#     job_description_text = db.Column(db.Text)
-
-
-#     def __repr__(self):
-#         return f'<JobDescription job_description_id = {self.job_description_id} || user_id = {self.user_id} ||job_applied_id = {self.job_applied_id} ||job_description_text = {self.job_description_text} >'
+    def __repr__(self):
+        return f'<ApplicationProgress app_progress_id = {self.app_progress_id} || application_state= {self.application_state} || job_applied_id = {self.job_applied_id} ||created_at = {self.created_at} >'
 
 
 def connect_to_db(app, db_uri='postgresql:///job-track-app', echo=True):

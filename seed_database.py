@@ -17,21 +17,11 @@ model.db.create_all()
 fake = Faker()
 
 # create 10 job position
-job_list = ["Software apprentice","software engineer","junior developer","senior developer","junior software engineer","sw engineer", "Software Cloud Engineer", "Devops Engineer", "Devops Cloud Engineer","Data Science Engineer"]
-
-for job in job_list:
-    job_title = crud.create_job_title(job)
+job_list = ["Software apprentice","Software engineer","Junior developer","Senior developer","Junior software engineer","Sw engineer", "Software Cloud Engineer", "Devops Engineer", "Devops Cloud Engineer","Data Science Engineer"]
 
 
 # create Application state
-app_state = ["applied","phone interview","onsite interview","rejected","offer"]
-for state in app_state:
-    application_state = crud.create_application_state(state)
-
-
-# create job application location
-for index in range(10):
-    location = crud.create_location(state = fake.city(), city = fake.city())
+app_state = ["Applied","Phone-Interview","Onsite-Interview","Rejected","Offer"]
 
 
 # create 10 fake users each creating their job entry
@@ -47,19 +37,19 @@ for user in range(10):
 
     for job in range(5):
         rand_month = randint(1,12)
-        date1 = datetime.date(year = 2020, month = rand_month, day = randint(1,14), hour = job+user)
+        date1 = datetime.date(year = 2020, month = rand_month, day = randint(1,14))
         date2 = datetime.date(year = 2020, month = rand_month, day = randint(15,29))
 
         company_name = fake.company()
-        job_title_id = randint(1, 10)
+        job_title = choice(job_list)
         application_deadline = date2
         job_listing_url = fake.url()
-        application_state_id = randint(1, 5)
-        location_id = randint(1, 10)
+        state = fake.state()
+        city = fake.city()
         application_listed = date1
         salary = randint(70000 , 90000)
 
-        job_detail = crud.create_job_detail(company_name, job_title_id, application_deadline, job_listing_url, application_state_id, location_id, application_listed, salary)
+        job_detail = crud.create_job_detail(company_name, job_title, application_deadline, job_listing_url, state, city, application_listed, salary)
 
         #create 5 job application per user
 
@@ -69,9 +59,10 @@ for user in range(10):
         job_applied = crud.create_job_applied(user_id, job_id, application_date_submitted)
 
         #create job application progress
-        app_state_id = job + 1
+        app_state = choice(["applied","phone interview","onsite interview","rejected","offer"])
         job_applied_id = user + 1 
         created_at = date1 
+        application_progress = crud.create_application_progress(app_state, job_applied_id, created_at)
 
         #create upto 5 notes per user
 
@@ -82,4 +73,6 @@ for user in range(10):
         note_date_created = date1
 
         note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_date_created)
+
+    
 

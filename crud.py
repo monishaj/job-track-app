@@ -1,4 +1,5 @@
-from model import db, User, ApplicationState, Location, JobTitle, JobDetail, JobCompletedApplication, Note, connect_to_db, ApplicationProgress
+from model import db, User, JobDetail, JobCompletedApplication, Note, connect_to_db, ApplicationProgress
+
 
 def create_user(fname, lname, email, password, phone_number):
     """Create and return a new user"""
@@ -22,77 +23,22 @@ def get_user_by_id(user_id):
 
     return User.query.get(user_id)
 
+
 def get_user_by_email(email):
     """Return a user by email."""
 
     return User.query.filter(User.email == email).first()
 
-def create_application_state(state_name):
-    """Create and return Application State """
-    app_state = ApplicationState(state_name = state_name)
-    db.session.add(app_state)
-    db.session.commit()
 
-    return app_state
-
-def get_application_state():
-    """Return all application state."""
-
-    return ApplicationState.query.all()
-
-
-def get_application_state_by_id(application_state_id):
-    """Return a application state by primary key."""
-
-    return ApplicationState.query.get(application_state_id)
-
-
-def create_location(state, city):
-    """Create and return location """
-    location = Location(state = state , city = city)
-    db.session.add(location)
-    db.session.commit()
-
-    return location
-
-def get_location():
-    """Return all location."""
-
-    return Location.query.all()
-
-
-def get_location_by_id(location_id):
-    """Return a location by primary key."""
-
-    return Location.query.get(location_id)    
-
-def create_job_title(job_title):
-    """Create and return Job Title """
-    job_role = JobTitle(job_title = job_title)
-    db.session.add(job_role)
-    db.session.commit()
-
-    return job_role
-
-def get_job_title():
-    """Return all job title."""
-
-    return JobTitle.query.all()
-
-
-def get_job_title_by_id(job_title_id):
-    """Return a job title by primary key."""
-
-    return JobTitle.query.get(job_title_id)    
-
-
-def create_job_detail(company_name, job_title_id, application_deadline, job_listing_url, application_state_id, location_id, application_listed, salary):
+def create_job_detail(company_name, job_title, application_deadline, job_listing_url, state, city, application_listed, salary):
     """Create and return Job Details """
-    job_detail = JobDetail(company_name = company_name, job_title_id = job_title_id, application_deadline = application_deadline, job_listing_url = job_listing_url, application_state_id = application_state_id, location_id = location_id, application_listed = application_listed, salary = salary)
+
+    job_detail = JobDetail(company_name = company_name, job_title = job_title, application_deadline = application_deadline, job_listing_url = job_listing_url, state = state , city = city, application_listed = application_listed, salary = salary)
     db.session.add(job_detail)
     db.session.commit()
 
     return job_detail
+
 
 def get_job_detail():
     """Return all job detail."""
@@ -108,11 +54,13 @@ def get_job_detail_by_id(job_detail_id):
 
 def create_job_applied(user_id, job_id, application_date_submitted):
     """Create and return job application completed """
+
     job_applied = JobCompletedApplication( user_id = user_id, job_id = job_id, application_date_submitted = application_date_submitted)
     db.session.add(job_applied)
     db.session.commit()
 
     return job_applied
+
 
 def get_job_applied():
     """Return all job applied."""
@@ -126,14 +74,15 @@ def get_job_applied_by_id(job_applied_id):
     return JobCompletedApplication.query.get(job_applied_id)
 
 
-
 def create_note(job_applied_id, user_id, note_title, note_text, note_date_created):
     """create and return note """
+
     note = Note(job_applied_id =job_applied_id, user_id = user_id , note_title = note_title , note_text = note_text, note_date_created = note_date_created)
     db.session.add(note)
     db.session.commit()
 
     return note 
+
 
 def get_note():
     """Return all note created."""
@@ -146,13 +95,15 @@ def get_note_by_id(note_id):
 
     return Note.query.get(note_id)
 
-def create_application_progress(application_state_id, job_applied_id , created_at):
+
+def create_application_progress(application_state, job_applied_id , created_at):
     """create and return Application Progress """
-    app_progress = ApplicationProgress(application_state_id = application_state_id, job_applied_id = job_applied_id, created_at = created_at)
+    app_progress = ApplicationProgress(application_state = application_state, job_applied_id = job_applied_id, created_at = created_at)
     db.session.add(app_progress)
     db.session.commit()
 
     return app_progress 
+
 
 def get_application_progress():
     """Return all Application Progress created."""
@@ -165,20 +116,38 @@ def get_application_progress_by_id(app_progress_id):
 
     return ApplicationProgress.query.get(app_progress_id)
 
-# def get_user_job_detail(user_id):
-#     JobDetail.
+
+def get_user_job_detail(user_id):
+    """ get a list of all the jobs a user applied"""
+
+    return JobDetail.query.filter(JobCompletedApplication.user_id == user_id).join(JobCompletedApplication).all()
 
 
+def update_application_progress_state(job_applied_id):
+    """ Update the created_at and application state of Application progress table once the user updates"""
+    pass
 
-######
-# def function (monisha userid= 5)
+def update_job_detail(job_id):
+    """ Update the application state in the job details table once the user updates"""
+    pass
 
-# current_users_applied_jobs = JobCompletedApplication.query.filter(JobCompletedApplication.userId == monisha_userid).all() --> return list of monisha's job application
 
-# in jinja,forloop or iterate through this list (current_users_applied_jobs)
-# job.job_completed_user.fname --> firstname
-# job.job_completed_detail.company_name 
+def get_application_state_by_applied(job_applied_id):
+    """ Return the latest application state object """
 
+    return ApplicationProgress.query.filter(JobCompletedApplication.job_applied_id == job_applied_id).join(JobCompletedApplication).order_by(ApplicationProgress.app_progress_id.desc()).first()
+
+
+def get_last_job_id():
+    """Get the last job_id record"""
+
+    return JobDetail.query.with_entities(JobDetail.job_id).order_by(JobDetail.job_id.desc()).first()[0]
+
+
+def get_last_job_applied_id():
+    """Get the last job applied id record"""
+
+    return JobCompletedApplication.query.with_entities(JobCompletedApplication.job_applied_id).order_by(JobCompletedApplication.job_applied_id.desc()).first()[0]
 
 
 if __name__ == '__main__':

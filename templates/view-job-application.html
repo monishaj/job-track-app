@@ -6,15 +6,39 @@
   <nav class="Navigation">
     <ul>
         <li><a href="/about">About</a></li>
-        <li><a href="/profile">profile</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/render-create-job-application-form">Create Job Application</a></li>
     </ul>
   </nav>
 
 {% endblock %}
 {% block body %} 
-    <h3>Hi {{ session['first_name']}}</h3> 
-    <h2>Your Job Application</h2> 
+    <h2>Hi {{ session['first_name']}},</h2> 
+    <h3>Your Job Application</h3> 
     <div>
+      <table style="width:75%" >
+        
+        <tr>
+          <th>Company Name</th>
+          <th>Job Title</th>
+          <th>Application Deadline</th>
+          <th>Job-listing-url</th>
+          <th>State</th>
+          <th>Application Status</th>
+         
+        </tr>
+        {% for job in dictionary_jobs %}
+          <tr>
+            <td>{{ dictionary_jobs[job]['company_name'][0] }}</td>
+            <td>{{dictionary_jobs[job]['job_title'][0]}}</td>
+            <td>{{dictionary_jobs[job]['application_deadline'][0]}}</td>
+            <td>{{dictionary_jobs[job]['job_listing_url'][0]}}</td>
+            <td>{{dictionary_jobs[job]['state'][0]}}</td> 
+            <td>{{dictionary_jobs[job]['app_state']}}</td>
       
+          </tr>
+        {% endfor %}  
+      </table>
     </div> 
 {% endblock %}
+

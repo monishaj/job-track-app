@@ -6,13 +6,22 @@
 <nav class="Navigation">
     <ul>
       <li><a href="/about">About</a></li>
-      <li><a href="/profile">profile</a></li>
+      <li><a href="/profile">Profile</a></li>
     </ul>
     </nav>
     
 
     {% endblock %}
 {% block body %}  
-<p><a href="/view/view-job-application">View Job Application</a></p>
-    <p><a href="view/create-job-application">Create Job Application</a></p>  
+<p>
+  <form action="/view"> 
+    <input type="radio" name = "view-job-application">
+    <label>View Job Application</label>
+    <input type="radio" name = "create-job-application">
+    <label>Create Job Application</label><br>
+    <input type="submit">
+   </form>
+</p>
+
+    
 {% endblock %}
