@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}View Page{% endblock %}
+{% block header %}
+
+<nav class="Navigation">
+
+    <a href="/profile">Profile</a>
+    <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/logout">Logout</a>
+
+</nav>
+    
+{% endblock %}
+{% block body %}    
+<h1>Hi {{ session['first_name']}},</h1> 
+  <div>
+    <p><h3>Company Name:   
+  {{dictionary_jobs['company_name'][0]}}</h3></p>
+  <p>Job Title: 
+  {{dictionary_jobs['job_title'][0]}}</p>
+  <p>Application Deadline: 
+  {{dictionary_jobs['application_deadline'][0]}}</p>
+  <p>Job Listing Url: 
+  {{dictionary_jobs['job_listing_url'][0]}}</p>
+  <p>Salary: 
+  {{dictionary_jobs['salary'][0]}}</p>
+  <p>Application Listed Date: 
+  {{dictionary_jobs['application_listed'][0]}}</p>  
+  <p>State: 
+  {{dictionary_jobs['state'][0]}}</p> 
+  <p>City: 
+  {{dictionary_jobs['city'][0]}}</p> 
+  <p>Application Status: 
+  {{dictionary_jobs['app_state']}}</p>
+  <fieldset>
+  <legend> Notes</legend>
+  <a href = "/view-job-application/add-notes"> Add Notes</a> 
+    {% for note in note_dictionary %}
+      <p>
+        <label>Note Title</label>
+      {{note_dictionary[note]['note_title'][0]}}
+      </p>
+      
+      <p>
+         <label>Note Text</label>
+        {{note_dictionary[note]['note_text']}}
+      </p>
+
+    {% endfor %}
+  </fieldset>
+    </div> 
+    
+{% endblock %}
+
+
+
+  
+    

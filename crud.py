@@ -73,6 +73,11 @@ def get_job_applied_by_id(job_applied_id):
 
     return JobCompletedApplication.query.get(job_applied_id)
 
+def get_job_applied_by_job_id(job_id):
+    """Return a job applied by job id."""
+
+    return JobCompletedApplication.query.filter(JobCompletedApplication.job_id == job_id).first().job_applied_id
+
 
 def create_note(job_applied_id, user_id, note_title, note_text, note_date_created):
     """create and return note """
@@ -90,10 +95,10 @@ def get_note():
     return Note.query.all()
 
 
-def get_note_by_id(note_id):
-    """Return a note by primary key."""
+def all_note_by_job_applied_id(job_applied_id):
+    """Return all notes for job applied id."""
 
-    return Note.query.get(note_id)
+    return Note.query.filter(Note.job_applied_id == job_applied_id).all()
 
 
 def create_application_progress(application_state, job_applied_id , created_at):

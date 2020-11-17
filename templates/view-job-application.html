@@ -4,11 +4,9 @@
 {% block header %}
 
   <nav class="Navigation">
-    <ul>
-        <li><a href="/about">About</a></li>
-        <li><a href="/profile">Profile</a></li>
-        <li><a href="/render-create-job-application-form">Create Job Application</a></li>
-    </ul>
+    <a href="/profile">Profile</a>
+    <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/logout">Logout</a>
   </nav>
 
 {% endblock %}
@@ -25,11 +23,11 @@
           <th>Job-listing-url</th>
           <th>State</th>
           <th>Application Status</th>
-         
         </tr>
+ 
         {% for job in dictionary_jobs %}
           <tr>
-            <td>{{ dictionary_jobs[job]['company_name'][0] }}</td>
+            <td><a href = "/view-job-application/{{dictionary_jobs[job]['job_id'][0]}}">{{ dictionary_jobs[job]['company_name'][0] }}</a></td>
             <td>{{dictionary_jobs[job]['job_title'][0]}}</td>
             <td>{{dictionary_jobs[job]['application_deadline'][0]}}</td>
             <td>{{dictionary_jobs[job]['job_listing_url'][0]}}</td>

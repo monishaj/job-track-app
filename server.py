@@ -18,6 +18,18 @@ def homepage():
 
     return render_template('homepage.html')
 
+@app.route('/about')
+def about():
+    """Show About page"""
+
+    return render_template('about.html')
+
+@app.route('/demo')
+def demo():
+    """Show Demo page"""
+
+    return render_template('demo.html')    
+
 
 @app.route('/', methods=['POST'])
 def set_user():
@@ -48,11 +60,39 @@ def set_user():
         flash('Account created! Logged In.')
         
         #saving the user to the session
-        session['new_user_id'] = new_user.user_id
+        session['user_id'] = new_user.user_id
         session['first_name'] = new_user.fname
         session['email'] = new_user.email
 
         return render_template('view.html')
+
+
+@app.route('/profile')
+def user_profile():
+    """Return the users profile """
+    user_id = session.get('user_id', None)
+    user = crud.get_user_by_email(session['email'])
+    if user_id == None:
+        user_details = {'logged_in': 'no'}
+    else:    
+        user_details = {
+            'user_id': user_id,
+            'first_name':user.fname,
+            'lname':user.lname,
+            'logged_in': 'yes',
+    }
+    return user_details
+
+@app.route('/logout')
+def logout():
+    """User log-out"""  
+
+    session.pop('user_id', None)
+    session.pop('first_name', None)
+    session.pop('email', None)
+    flash('Logged Out')
+    return redirect('/')
+
 
 
 @app.route('/view')
@@ -76,6 +116,7 @@ def job_application():
     dictionary_jobs = {}
     for index,job in enumerate(job_detail): 
         dictionary_jobs[index] = {}
+        dictionary_jobs[index]['job_id'] = job.job_id,
         dictionary_jobs[index]['company_name'] = job.company_name,
         dictionary_jobs[index]['job_title'] = job.job_title,
         dictionary_jobs[index]['application_deadline'] = job.application_deadline,
@@ -86,11 +127,53 @@ def job_application():
 
     return render_template('view-job-application.html', dictionary_jobs=dictionary_jobs)
 
+@app.route('/view-job-application/<job_id>')
+def get_job_details(job_id):
+    """ Display extended job details"""
+    print("job_id:",job_id)
+    user = crud.get_user_by_email(session['email'])
+    user_id = user.user_id
+    print("user_id:",user_id)
+    # user_id = 11
+    job_detail = crud.get_user_job_detail(user_id)
+    job_applied_id = crud.get_job_applied_by_job_id(job_id)
+    dictionary_jobs = {}
+    for job in job_detail:
+        print("job:",job) 
+        if job.job_id == int(job_id): 
+            print("entered if")
+            dictionary_jobs['company_name'] = job.company_name,
+            dictionary_jobs['job_title'] = job.job_title,
+            dictionary_jobs['application_deadline'] = job.application_deadline,
+            dictionary_jobs['job_listing_url'] = job.job_listing_url ,
+            dictionary_jobs['state'] = job.state,
+            dictionary_jobs['city'] = job.city,
+            dictionary_jobs['salary'] = job.salary,
+            dictionary_jobs['application_listed'] = job.application_listed,
+            dictionary_jobs['app_state'] = crud.get_application_state_by_applied(job.job_completed_applications[0].job_applied_id).application_state
+    
+    notes_list = crud.all_note_by_job_applied_id(job_applied_id)
+    note_dictionary = {}
+    for index, note in enumerate(notes_list):
+        note_dictionary[index] = {}
+        note_dictionary[index]['note_title'] = note.note_title,
+        note_dictionary[index]['note_text'] = note.note_text
+    print("dictionary_jobs::",dictionary_jobs)
+    print(note_dictionary)
+    
+    return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary )
+
+
+@app.route('/view-job-application/add-notes' , methods=['POST', 'GET'])
+def add_notes():
+    """ Add Notes"""
+    pass
+    
 
 @app.route('/create-job-application', methods=['POST'])
 def create_job_application():
     """Create a job application """
-    
+
     # if request.method == 'POST':
     user = crud.get_user_by_email(session['email'])
     user_id = user.user_id
@@ -99,7 +182,7 @@ def create_job_application():
     job_title = request.form.get('job_title')
     deadline = request.form.get('deadline')
     job_listing_url = request.form.get('company_name')
-    listing_date = request.form.get('listing_date')
+    listing_date = request.form.get('application_listed')
     salary = request.form.get('salary')
     application_state = request.form.get('application_state')
     state = request.form.get('state')
