@@ -6,6 +6,8 @@
   <nav class="Navigation">
     <a href="/profile">Profile</a>
     <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/metrics">Metrics</a>
+    <a href="/events">Events</a>
     <a href="/logout">Logout</a>
   </nav>
 
@@ -27,7 +29,7 @@
  
         {% for job in dictionary_jobs %}
           <tr>
-            <td><a href = "/view-job-application/{{dictionary_jobs[job]['job_id'][0]}}">{{ dictionary_jobs[job]['company_name'][0] }}</a></td>
+            <td><a href = "/job-application/{{dictionary_jobs[job]['job_id'][0]}}">{{ dictionary_jobs[job]['company_name'][0] }}</a></td>
             <td>{{dictionary_jobs[job]['job_title'][0]}}</td>
             <td>{{dictionary_jobs[job]['application_deadline'][0]}}</td>
             <td>{{dictionary_jobs[job]['job_listing_url'][0]}}</td>

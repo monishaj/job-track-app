@@ -1,4 +1,4 @@
-from model import db, User, JobDetail, JobCompletedApplication, Note, connect_to_db, ApplicationProgress
+from model import db, User, JobDetail, JobCompletedApplication, Note, connect_to_db, ApplicationProgress, Event
 
 
 def create_user(fname, lname, email, password, phone_number):
@@ -10,6 +10,20 @@ def create_user(fname, lname, email, password, phone_number):
     db.session.commit()
 
     return user
+
+def create_event(user_id, event_title, event_text, reminder_status, created_at):
+    """Create and return a new event"""
+    event = Event(user_id = user_id, event_title = event_title, event_text = event_text, reminder_status =reminder_status, created_at=created_at)
+
+    db.session.add(event)
+    db.session.commit()
+
+    return event
+
+def get_event_by_user_id(user_id):
+    """ Get all Event by user_id"""
+    return Event.query.filter(Event.user_id == user_id).order_by(Event.created_at.desc()).all()
+
 
 
 def get_users():
@@ -79,10 +93,10 @@ def get_job_applied_by_job_id(job_id):
     return JobCompletedApplication.query.filter(JobCompletedApplication.job_id == job_id).first().job_applied_id
 
 
-def create_note(job_applied_id, user_id, note_title, note_text, note_date_created):
+def create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created):
     """create and return note """
 
-    note = Note(job_applied_id =job_applied_id, user_id = user_id , note_title = note_title , note_text = note_text, note_date_created = note_date_created)
+    note = Note(job_applied_id =job_applied_id, user_id = user_id , note_title = note_title , note_text = note_text,note_category = note_category, note_date_created = note_date_created)
     db.session.add(note)
     db.session.commit()
 
@@ -98,7 +112,35 @@ def get_note():
 def all_note_by_job_applied_id(job_applied_id):
     """Return all notes for job applied id."""
 
-    return Note.query.filter(Note.job_applied_id == job_applied_id).all()
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Note' ).all()
+
+
+def all_jd_by_job_applied_id(job_applied_id): 
+    """Return all job description for job applied id."""   
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Job Description' ).all()
+
+
+def all_recruiter_by_job_applied_id(job_applied_id): 
+    """Return all recruiter details for job applied id."""   
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Recruiter Contact' ).all() 
+
+
+def all_resume_by_job_applied_id(job_applied_id): 
+    """Return all Resume for job applied id."""   
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Resume' ).all()
+
+
+def all_followup_by_job_applied_id(job_applied_id): 
+    """Return all Follow up Template for job applied id."""   
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Follow-up').all()
+
+def all_interview_by_job_applied_id(job_applied_id): 
+    """Return all Interview question by job applied id."""   
+    return Note.query.filter(Note.job_applied_id == job_applied_id, ((Note.note_category == 'Interview Question Technical') | (Note.note_category == 'Interview Question Informational') | (Note.note_category == 'Interview Question Behavioral'))).order_by(Note.note_category).all()
+
+def all_interview_by_user_id(user_id): 
+    """Return all Interview question by job user id."""
+    return Note.query.filter(Note.user_id == user_id, ((Note.note_category == 'Interview Question Technical') | (Note.note_category == 'Interview Question Informational') | (Note.note_category == 'Interview Question Behavioral'))).order_by(Note.note_date_created.desc()).all()
 
 
 def create_application_progress(application_state, job_applied_id , created_at):
@@ -128,13 +170,13 @@ def get_user_job_detail(user_id):
     return JobDetail.query.filter(JobCompletedApplication.user_id == user_id).join(JobCompletedApplication).all()
 
 
-def update_application_progress_state(job_applied_id):
-    """ Update the created_at and application state of Application progress table once the user updates"""
-    pass
+# def update_application_progress_state(job_applied_id):
+#     """ Update the created_at and application state of Application progress table once the user updates"""
+#     pass
 
-def update_job_detail(job_id):
-    """ Update the application state in the job details table once the user updates"""
-    pass
+# def update_job_detail(job_id):
+#     """ Update the application state in the job details table once the user updates"""
+#     pass
 
 
 def get_application_state_by_applied(job_applied_id):

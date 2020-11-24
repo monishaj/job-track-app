@@ -23,7 +23,7 @@
     <p>Email <input type="email" name="email" maxlength="50" placeholder="test@test.com" size="25" required></p>
     <!-- using pattern ex pattern="[0-9a-fA-F]{4,12}-->
     <p>Password <input type="password" name="password" maxlength="25" size="15" required></p> 
-    <p>Phone Number <input type="tel" name="phone_number" pattern="+1[0-9]{10}" placeholder="+14234657890" minlength="12" maxlength="12" size="15" required></p>
+    <p>Phone Number <input type="tel" name="phone_number" pattern="^\+1?\d{10}$" placeholder="+14234657890" minlength="12" maxlength="12" size="15" required></p>
     <p>
       <input type="submit" value="Sign Up">
     </p>

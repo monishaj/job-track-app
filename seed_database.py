@@ -30,7 +30,7 @@ for user in range(10):
     lname = fake.last_name() #fake.name().split(" ")
     email = f"{fname}{lname}@gmail.com"
     password = f"{fname}{lname}123" #fake.password(length=12)
-    phone_number = int(f"669247609{user}") 
+    phone_number = f"+1669247609{user}" 
     users = crud.create_user(fname, lname, email, password, phone_number)
 
     #create job details entry of each user 
@@ -68,11 +68,12 @@ for user in range(10):
 
         job_applied_id = job +(5 * user)+ 1
         user_id = user + 1
-        note_title = f" Notes{job}"
-        note_text = f" This is Note Number {job}."
+        note_category = choice(["Job Description","Follow-up","Note","Interview Question Behavioral","Interview Question Informational","Interview Question Technical","Recruiter Contact", "Resume"])
+        note_title = f" {note_category} {job}"
+        note_text = f" This is Note {note_category} of {company_name}."
         note_date_created = date1
 
-        note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_date_created)
+        note = crud.create_note(job_applied_id, user_id, note_title, note_text,note_category, note_date_created)
 
     
 

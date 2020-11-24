@@ -5,6 +5,9 @@ import crud
 # from flask_login import LoginManager
 from jinja2 import StrictUndefined
 from datetime import datetime
+from twilio.rest import Client
+import os
+import requests
 
 app = Flask(__name__)
 # login = LoginManager(app)
@@ -95,15 +98,19 @@ def logout():
 
 
 
-@app.route('/view')
+@app.route('/view' , methods = ['GET', 'POST'])
 def view_page():
     """Show view page"""  
 
-    view_job_app = request.args.get('view-job-application')
-    if view_job_app:
+    view_job_app = request.form['job-application']
+    print('************************************')
+    print("view_job_app is ****************",view_job_app)
+    if view_job_app == 'view-job-application':
         return redirect('/view-job-application')
+    elif view_job_app == 'view-interview-questions':
+        return redirect('/all-interview-questions')    
     else:
-        return render_template('create-job-application.html')
+        return redirect('/render-create-job-application-form')
 
 
 @app.route('/view-job-application')
@@ -126,6 +133,13 @@ def job_application():
         # job_description['app_state'] = job.job_completed_applications[0].job_application_progress[-1].application_state
 
     return render_template('view-job-application.html', dictionary_jobs=dictionary_jobs)
+
+
+@app.route('/job-application/<job_id>')
+def render_job_application(job_id):
+    session['job_id'] = job_id
+    return render_template('job-application.html')
+
 
 @app.route('/view-job-application/<job_id>')
 def get_job_details(job_id):
@@ -153,21 +167,98 @@ def get_job_details(job_id):
             dictionary_jobs['app_state'] = crud.get_application_state_by_applied(job.job_completed_applications[0].job_applied_id).application_state
     
     notes_list = crud.all_note_by_job_applied_id(job_applied_id)
+    
     note_dictionary = {}
+    
     for index, note in enumerate(notes_list):
         note_dictionary[index] = {}
+        # note_dictionary[index]['note_category'] = note.note_category,
         note_dictionary[index]['note_title'] = note.note_title,
         note_dictionary[index]['note_text'] = note.note_text
-    print("dictionary_jobs::",dictionary_jobs)
-    print(note_dictionary)
+    # print("dictionary_jobs::",dictionary_jobs)
+    # print(note_dictionary)
+    note_job_description = crud.all_jd_by_job_applied_id(job_applied_id)
+    note_jd = {}
+    for index, note in enumerate(note_job_description):
+        note_jd[index] = {}
+        note_jd[index]['note_title'] = note.note_title,
+        note_jd[index]['note_text'] = note.note_text
+    note_recruit = crud.all_recruiter_by_job_applied_id(job_applied_id)
+    note_recruiter = {}
+    for index, note in enumerate(note_recruit):
+        note_recruiter[index] = {}
+        note_recruiter[index]['note_title'] = note.note_title,
+        note_recruiter[index]['note_text'] = note.note_text
     
-    return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary )
+
+    
+    return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary, note_jd= note_jd, note_recruiter = note_recruiter )
 
 
-@app.route('/view-job-application/add-notes' , methods=['POST', 'GET'])
-def add_notes():
-    """ Add Notes"""
-    pass
+@app.route('/resources/<job_id>')
+def get_resources(job_id):
+    """ get resources of a particular job application"""
+    job_applied_id = crud.get_job_applied_by_job_id(job_id)
+    note_resumes = crud.all_resume_by_job_applied_id(job_applied_id)
+    note_resume = {}
+    for index, note in enumerate(note_resumes):
+        note_resume[index] = {}
+        note_resume[index]['note_title'] = note.note_title,
+        note_resume[index]['note_text'] = note.note_text
+    
+    note_followups = crud.all_followup_by_job_applied_id(job_applied_id)
+    note_followup = {}
+
+    for index, note in enumerate(note_followups):
+        note_followup[index] = {}
+        note_followup[index]['note_title'] = note.note_title,
+        note_followup[index]['note_text'] = note.note_text
+    
+    return render_template('resources.html' , note_resume =note_resume , note_followup=note_followup)
+
+ 
+@app.route('/interview-questions/<job_id>')
+def get_interview_questions(job_id):
+    """ get interview questions of a particular job application"""
+    """ get resources of a particular job application"""
+    job_applied_id = crud.get_job_applied_by_job_id(job_id)
+    note_interviewqs = crud.all_interview_by_job_applied_id(job_applied_id)
+    note_interview_question = {}
+    for index, note in enumerate(note_interviewqs):
+        note_interview_question[index] = {}
+        note_interview_question[index]['note_category'] = note.note_category,
+        note_interview_question[index]['note_title'] = note.note_title,
+        note_interview_question[index]['note_text'] = note.note_text
+    
+    return render_template('interview-questions.html' , note_interview_question =note_interview_question )
+   
+
+@app.route('/update-fields/<job_id>' , methods=['POST', 'GET'])
+def update_fileds(job_id):
+    """ Update Fields of a particular job application"""
+    job_applied_id = crud.get_job_applied_by_job_id(job_id)
+    created_at = datetime.now()
+    user_id = session['user_id']
+    note_date_created = datetime.now()
+    if request.method == 'GET':
+        return render_template('update-fields.html')
+    else:
+        application_state = request.form.get('application_state')
+        note_category = request.form.get('note_category')
+        note_title = request.form.get('note_title')
+        note_text = request.form.get('note_text')
+
+        if application_state:
+            application_progress = crud.create_application_progress(application_state, job_applied_id , created_at)
+        if note_category:
+            note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created)
+    template =  f'/view-job-application/{job_id}'       
+    return redirect(template)
+
+
+
+
+
     
 
 @app.route('/create-job-application', methods=['POST'])
@@ -187,6 +278,7 @@ def create_job_application():
     application_state = request.form.get('application_state')
     state = request.form.get('state')
     city = request.form.get('city')
+    note_category = request.form.get('note_category')
     note_title = request.form.get('note_title')
     note_text = request.form.get('note_text')
     
@@ -203,7 +295,7 @@ def create_job_application():
     job_applied_id = crud.get_last_job_applied_id()
     note_date_created = datetime.now()
 
-    note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_date_created)
+    note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created)
 
     created_at = datetime.now()
 
@@ -217,8 +309,92 @@ def create_job_application():
 
 @app.route('/render-create-job-application-form')
 def render_create_job():
-    
+    """Rendering create job application template """
     return render_template('create-job-application.html')
+
+@app.route('/all-interview-questions')
+def all_interview_questions():
+    """ Return all the Interview questions of every job the user applied"""
+    # user_id = 11
+    user_id = session['user_id']
+    interview_objects = crud.all_interview_by_user_id(user_id)
+    behavioral = {}
+    technical = {}
+    informational = {}
+
+    for index, note in enumerate(interview_objects):
+        if note.note_category == 'Interview Question Behavioral':
+            behavioral[index] = {}
+            behavioral[index]['note_title'] = note.note_title,
+            behavioral[index]['note_text'] = note.note_text
+            
+
+        elif note.note_category == 'Interview Question Technical':
+            technical[index] = {}
+            technical[index]['note_title'] = note.note_title,
+            technical[index]['note_text'] = note.note_text
+
+        else:
+            informational[index] = {}
+            informational[index]['note_title'] = note.note_title,
+            informational[index]['note_text'] = note.note_text
+    print ('behavioral',behavioral)
+    print ('technical',technical)
+    print ('informational',informational)
+
+    return render_template('all-interview-questions.html',behavioral=behavioral, technical = technical,informational=informational  )
+
+@app.route('/events' , methods = ['GET','POST'])
+def events():
+    """Rendering event template """
+    # if request.method == 'GET':
+    #     return render_template('events.html',event_dict=event_dict)
+    # else:
+    user = crud.get_user_by_email(session['email'])
+    user_id = user.user_id 
+    phone = user.phone_number
+
+    event_title = request.form.get('event_title')
+    event_text = request.form.get('reminder_text')
+    event_time = request.form.get('event-time')
+    reminder_status = request.form.get('reminder')
+    print('reminder_status',reminder_status)
+
+    if event_time:
+        created_at = datetime.strptime(event_time, "%Y-%m-%dT%H:%M")
+        event = crud.create_event(user_id,event_title,event_text,reminder_status, created_at)
+
+    if reminder_status == 'Yes':
+        print('yes************************************')
+        # twilio(phone,event_text)
+
+    event_dict = {}
+
+    event_objects = crud.get_event_by_user_id(user_id)
+    for index, obj in enumerate(event_objects):
+        event_dict[index] = {}
+        event_dict[index]['event_title'] = obj.event_title,
+        event_dict[index]['reminder_status'] = obj.reminder_status
+        event_dict[index]['created_at'] = obj.created_at
+    print(event_dict)
+
+    return render_template('events.html', event_dict=event_dict)
+
+
+def twilio(to_number,body_content):
+    # run source secrets.sh per terminal window
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+    phone = os.getenv('TWILIO_PHONE_NUMBER')
+    client = Client(account_sid, auth_token)
+
+    # phone number should be as string
+    message = client.messages.create(
+    to=to_number, 
+    from_=phone,
+    body=body_content)
+
+    print(message.sid)
 
 
 if __name__ == '__main__':

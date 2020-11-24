@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}All Interview Question{% endblock %}
+{% block header %}
+
+<nav class="Navigation">
+
+    <a href="/profile">Profile</a>
+    <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/logout">Logout</a>
+
+</nav>
+    
+{% endblock %}
+{% block body %} 
+<fieldset>
+    <legend> Interview Questions Behavioral</legend>
+      {% for question in behavioral%}
+        <p>
+          <label>Title: </label>
+        {{behavioral[question]['note_title'][0]}}
+        </p>
+        
+        <p>
+           <label>Text: </label>
+          {{behavioral[question]['note_text']}}
+        </p>
+  
+      {% endfor %}
+    </fieldset>
+    <fieldset>
+        <legend> Interview Questions Technical</legend>
+          {% for question in technical%}
+            <p>
+              <label>Title: </label>
+            {{technical[question]['note_title'][0]}}
+            </p>
+            
+            <p>
+               <label>Text: </label>
+              {{technical[question]['note_text']}}
+            </p>
+      
+          {% endfor %}
+        </fieldset>
+        <fieldset>
+            <legend> Interview Questions Informational</legend>
+              {% for question in informational%}
+                <p>
+                  <label>Title: </label>
+                {{informational[question]['note_title'][0]}}
+                </p>
+                
+                <p>
+                   <label>Text: </label>
+                  {{informational[question]['note_text']}}
+                </p>
+          
+              {% endfor %}
+            </fieldset>
+    {% endblock %}  

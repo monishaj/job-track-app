@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}View Page{% endblock %}
+{% block header %}
+
+<nav class="Navigation">
+
+    <a href="/profile">Profile</a>
+    <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/job-application/{{ session['job_id']}}">Options</a>
+    <a href="/logout">Logout</a>
+
+
+</nav>
+    
+{% endblock %}
+{% block body %} 
+<fieldset>
+    <legend> Update Details</legend>
+    <form action="/update-fields/{{ session['job_id']}}" method="POST">
+        <p>Application State <select name="application_state" required>
+            <option value = "Applied">Applied</option>
+            <option value = "Phone-interview">Phone-interview</option>
+            <option value = "Onsite-interview">Onsite-interview</option>
+            <option value = "Rejected">Rejected</option>
+            <option value = "Offer">Offer</option>
+            </select> 
+         </p>
+         <p><label>Note</label><br>
+            <p>Note Category <select name="note_category">
+              <option value = "Job Description">Job Description</option>
+              <option value = "Follow-up">Follow-up</option>
+              <option value = "Note">Note</option>
+              <option value = "Interview Question Behavioral">Interview Question - Behavioral</option>
+              <option value = "Interview Question Informational">Interview Question - Informational </option>
+              <option value = "Interview Question Technical">Interview Question - Technical</option>
+              <option value = "Recruiter Contact">Recruiter Contact</option>
+              <option value = "Resume">Resume</option>
+              </select> 
+           </p>
+              <label> Enter Note Title</label>
+              <input type="text" name="note_title"><br>
+              <label>Enter Note text</label>
+              <textarea name = "note_text"></textarea>
+              </p>
+            <input type="submit">
+          </p>
+      </form>
+    </fieldset>
+    {% endblock %}  

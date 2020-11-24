@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Events Page{% endblock %}
+{% block header %}
+
+<nav class="Navigation">
+   
+      <a href="/profile">Profile</a>
+      <a href="/metrics">Metrics</a>
+      <a href="/render-create-job-application-form">Create Job Application</a>
+      <a href="/view-job-application">View Job Application</a>
+      <a href="/logout">Logout</a>
+      
+
+    </nav>
+    
+
+    {% endblock %}
+{% block body %}
+<div> 
+
+  <form action="/events" method="POST">
+    <h2>Create Event</h2>
+    <p>Event Title <input type="text" name="event_title" required></p>
+    <label>Enter Reminder Text</label>
+    <textarea name = "reminder_text" maxlength="160"></textarea>
+    <p>Event Time <input class="dates" type="datetime-local" name="event-time"></p>
+    <label>Send Reminder</label><br>
+    <label>Yes</label>
+    <input type="radio"  name="reminder" value="Yes">
+    <label>No</label>
+    <input type="radio" name="reminder" value="No">
+    
+    <input type="submit">
+   </form>
+</p>
+
+</div> 
+<div>
+    <h2>Events</h2>
+    <div>
+        <table style="width:40%" >
+          <tr>
+            <th>Event Title</th>
+            <th>Reminder Status</th>
+            <th>Created At</th>
+          </tr>
+        {% for event in event_dict %} 
+            <tr>
+              <td>{{event_dict[event]['event_title'][0]}}</td>
+              <td>{{event_dict[event]['reminder_status']}}</td>
+              <td>{{event_dict[event]['created_at']}}</td>
+            </tr>
+        {% endfor %}  
+        </table>
+      </div>
+
+    
+ 
+</div> 
+    
+{% endblock %}
+<!-- <label>Event Title : Send follow up</label><br>
+    <label>Event At : 2020-11-19 03:06:00</label><br>
+    <label>Reminder Set : yes</label> <br>
+    <br>   
+    <label>Event Title : Check job portal</label><br>
+    <label>Event At : 2020-11-19 06:06:00</label><br>
+    <label>Reminder Set : no</label> -->

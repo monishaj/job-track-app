@@ -15,11 +15,12 @@ class User(db.Model):
     lname = db.Column(db.String(50))
     email = db.Column(db.Text, unique = True,nullable=False)
     password = db.Column(db.String(200),nullable=False)
-    phone_number = db.Column(db.BigInteger ,nullable=False)
+    phone_number = db.Column(db.String ,nullable=False)
     # to set any default parameters put default = xyz
 
     user_notes = db.relationship("Note")
     user_job_completed_applications = db.relationship("JobCompletedApplication")
+    user_events = db.relationship("Event")
 
 
     def set_password(self, password):
@@ -65,6 +66,7 @@ class Note(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.user_id'))
     note_title = db.Column(db.String(100))
     note_text = db.Column(db.Text)
+    note_category = db.Column(db.String(100))
     note_date_created = db.Column(db.DateTime)
 
     note_job_completed_application = db.relationship("JobCompletedApplication")
@@ -111,6 +113,25 @@ class ApplicationProgress(db.Model):
     def __repr__(self):
         return f'<ApplicationProgress app_progress_id = {self.app_progress_id} || application_state= {self.application_state} || job_applied_id = {self.job_applied_id} ||created_at = {self.created_at} >'
 
+
+class Event(db.Model):
+    """ Events set by the user"""
+
+    __tablename__ = 'events'
+    event_id = db.Column(db.Integer,
+                        primary_key = True, 
+                        autoincrement = True)
+    user_id = db.Column(db.Integer , db.ForeignKey('users.user_id'))
+    event_title = db.Column(db.String)
+    event_text = db.Column(db.Text)
+    reminder_status = db.Column(db.String) 
+    created_at = db.Column(db.DateTime)
+    # time_delta = db.Column(db.DateTime)
+
+    event_user_id = db.relationship("User")
+
+    def __repr__(self):
+        return f'<Event event_id = {self.event_id} || user_id {self.user_id} || event_title = {self.event_title} ||reminder_status = {self.reminder_status} >'
 
 def connect_to_db(app, db_uri='postgresql:///job-track-app', echo=True):
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri

@@ -7,6 +7,9 @@
 
     <a href="/profile">Profile</a>
     <a href="/render-create-job-application-form">Create Job Application</a>
+    <a href="/job-application/{{ session['job_id']}}">Options</a>
+    <a href="/metrics">Metrics</a>
+    <a href="/events">Events</a>
     <a href="/logout">Logout</a>
 
 </nav>
@@ -34,21 +37,51 @@
   <p>Application Status: 
   {{dictionary_jobs['app_state']}}</p>
   <fieldset>
+    <legend> Job Description</legend>
+      {% for jd in note_jd %}
+        <p>
+          <label>Title: </label>
+        {{note_jd[jd]['note_title'][0]}}
+        </p>
+        
+        <p>
+           <label>Text: </label>
+          {{note_jd[jd]['note_text']}}
+        </p>
+  
+      {% endfor %}
+    </fieldset>
+  <fieldset>
   <legend> Notes</legend>
-  <a href = "/view-job-application/add-notes"> Add Notes</a> 
+  <!-- <a href = "/view-job-application/add-notes"> Add Notes</a>  -->
     {% for note in note_dictionary %}
       <p>
-        <label>Note Title</label>
+        <label>Note Title: </label>
       {{note_dictionary[note]['note_title'][0]}}
       </p>
       
       <p>
-         <label>Note Text</label>
+         <label>Note Text: </label>
         {{note_dictionary[note]['note_text']}}
       </p>
 
     {% endfor %}
   </fieldset>
+  <fieldset>
+    <legend>Recruiter Details</legend>
+      {% for recruiter in note_recruiter %}
+        <p>
+          <label>Title: </label>
+        {{note_recruiter[recruiter]['note_title'][0]}}
+        </p>
+        
+        <p>
+           <label>Text: </label>
+          {{note_recruiter[recruiter]['note_text']}}
+        </p>
+  
+      {% endfor %}
+    </fieldset>
     </div> 
     
 {% endblock %}
