@@ -3,34 +3,105 @@
 
 
 {% block header %} 
+<nav class="navbar navbar-expand-lg navbar-light lighten-5">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a id="job-track-app-logo" class="navbar-brand" href="/about">
+    <!-- Logo made using Logomaker -->
+    <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+  <strong>Job Track App</strong></a>  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/demo">Demo</a>
+        </li>
+  </div>
+</nav>
 
-    <nav class="Navigation">
-      <a href="/about">About</a>
-      <a href="/demo">Demo</a>
-    </nav>
 {% endblock %}
-{% block body %} 
-  <h1>Stay Organized and Increase Productivity</h1>  
-  <div>
-    <img src="/static/img/search.jpg" alt="Woman using a Laptop">
+{% block body %}
+<section class="login-block">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 login-sec">
+        <div class="form">
+          <h2 class="text-center">Register</h2>
+          <form class="sign-up" action="/" method="POST">
+            <!-- <label for="signing-up" class="text-uppercase">Sign Up</label> -->
+            <div class="form-group">
+              <label for="firstName" class="text-uppercase">First Name</label>
+              <input type="text" name="fname" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName" class="text-uppercase">Last Name</label>
+              <input type="text" name="lname" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1" class="text-uppercase">Email</label>
+              <input type="email" class="form-control" name="email" maxlength="50" placeholder="test@test.com" size="25" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1" class="text-uppercase">Password</label>
+              <input type="password" class="form-control" name="password" maxlength="25" size="15" required>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="text-uppercase">Phone Number</label>
+              <input type="tel" name="phone_number" pattern="^\+1?\d{10}$" placeholder="+14234657890" minlength="12" maxlength="12" size="15" class="form-control" required>
+            </div>
+            <div class="form-check">
+              <button type="submit" class="btn btn-login float-right">Create</button>
+            </div>
+            <div class="copy-text">Already a member? <a href="/sign-in">Sign In</a></div>
+          </form>
+          
+          </div>
+          
+        </div>
+        <div class="col-md-8 banner-sec">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+               <ol class="carousel-indicators">
+                  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+          <div class="carousel-inner" role="listbox">
+          <div class="carousel-item active">
+            <img class="d-block img-fluid" src="https://static.pexels.com/photos/33972/pexels-photo.jpg" alt="First slide">
+          <div class="carousel-caption d-none d-md-block">
+          <div class="banner-text">
+            <h2>Job Track App</h2>
+            <p><strong>Stay Organized and Increase Productivity</strong></p>
+          </div>	
+        </div>
+      </div>
+  <div class="carousel-item">
+    <img class="d-block img-fluid" src="/static/img/laptop.jpg" alt="First slide">
+    <div class="carousel-caption d-none d-md-block">
+      <div class="banner-text">
+          <h2>Job Track App</h2>
+          <p><strong>Organizing and tracking job application has never been so easy. With Job Track App you can stay on top of your next career challenge while we do the heavy lifting of systematizing job applications for you so that you can focus more on what is important</strong></p>
+      </div>	
   </div>
-  <div>
-  <fieldset> 
-  <legend><h2>Sign Up</h2></legend>
-  <form action="/" method="POST">
-    <p>First Name <input type="text" name="fname" required></p>
-    <p>Last Name <input type="text" name="lname"></p>
-    <p>Email <input type="email" name="email" maxlength="50" placeholder="test@test.com" size="25" required></p>
-    <!-- using pattern ex pattern="[0-9a-fA-F]{4,12}-->
-    <p>Password <input type="password" name="password" maxlength="25" size="15" required></p> 
-    <p>Phone Number <input type="tel" name="phone_number" pattern="^\+1?\d{10}$" placeholder="+14234657890" minlength="12" maxlength="12" size="15" required></p>
-    <p>
-      <input type="submit" value="Sign Up">
-    </p>
-  </form>
-  </fieldset>
   </div>
-  <div>
-      <h3>Organizing and tracking job application has never been so easy. With Job Track App you can stay on top of your next career challenge while we do the heavy lifting of systematizing job applications for you so that you can focus more on what is important.  </h3>
+  <div class="carousel-item">
+    <img class="d-block img-fluid" src="https://images.pexels.com/photos/872957/pexels-photo-872957.jpeg" alt="First slide">
+    <div class="carousel-caption d-none d-md-block">
+      <div class="banner-text">
+          <h2>Job Track App</h2>
+          <p><strong>Your Next Career Challenge Awaits!</strong></p>
+      </div>	
   </div>
+</div>
+          </div>	   
+      
+  </div>
+</div>
+  </div>
+</section>
+   
+    
 {% endblock %}

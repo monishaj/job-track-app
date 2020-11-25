@@ -33,6 +33,9 @@ def demo():
 
     return render_template('demo.html')    
 
+@app.route('/sign-in')
+def signin():
+    return render_template('sign-in.html')
 
 @app.route('/', methods=['POST'])
 def set_user():
