@@ -13,23 +13,39 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <!-- Load custom stylesheet -->
     <link rel="stylesheet" href="/static/css/style.css">
-    <header>{% block header %}  <nav class="Navigation">
-      <!-- <a href="/profile">Profile</a> -->
-      <a href="/view-job-application">View All Job Application</a>
-      <a href="/render-create-job-application-form">Create Job Application</a>
-      <!-- <a href="/metrics">Metrics</a> -->
-      <a href="/events">Events</a>
-      <a href="/logout">Logout</a>
-    </nav>{% endblock %}</header>
+    <header>{% block header %} 
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a id="job-track-app-logo" class="navbar-brand" href="/about">
+          <!-- Logo made using Logomaker -->
+          <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+          <strong>Job Track App</strong></a>  
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/events">Events</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+        </div>
+      </nav>
+      
+    {% endblock %}</header>
    
     {% block head %}{% endblock %}
   </head>
   <body>
-    {% for msg in get_flashed_messages() %}
-    <p class="flash-msg">
-      {{ msg }}
-    </p>
-    {% endfor %}
+    <div class="toast-body">
+      {% for msg in get_flashed_messages() %}
+        
+        <span text-align: center;>{{ msg }}</span>
+      
+      {% endfor %}
+    </div>
+
     {% block body %}{% endblock %}
 
     {% block after_body %}{% endblock %}

@@ -11,6 +11,7 @@ def create_user(fname, lname, email, password, phone_number):
 
     return user
 
+
 def create_event(user_id, event_title, event_text, reminder_status, created_at):
     """Create and return a new event"""
     event = Event(user_id = user_id, event_title = event_title, event_text = event_text, reminder_status =reminder_status, created_at=created_at)
@@ -20,10 +21,10 @@ def create_event(user_id, event_title, event_text, reminder_status, created_at):
 
     return event
 
+
 def get_event_by_user_id(user_id):
     """ Get all Event by user_id"""
     return Event.query.filter(Event.user_id == user_id).order_by(Event.created_at.desc()).all()
-
 
 
 def get_users():
@@ -87,6 +88,7 @@ def get_job_applied_by_id(job_applied_id):
 
     return JobCompletedApplication.query.get(job_applied_id)
 
+
 def get_job_applied_by_job_id(job_id):
     """Return a job applied by job id."""
 
@@ -117,7 +119,7 @@ def all_note_by_job_applied_id(job_applied_id):
 
 def all_jd_by_job_applied_id(job_applied_id): 
     """Return all job description for job applied id."""   
-    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Job Description' ).all()
+    return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Job Description' ).order_by(Note.note_date_created.desc()).first()
 
 
 def all_recruiter_by_job_applied_id(job_applied_id): 
@@ -134,9 +136,11 @@ def all_followup_by_job_applied_id(job_applied_id):
     """Return all Follow up Template for job applied id."""   
     return Note.query.filter(Note.job_applied_id == job_applied_id, Note.note_category == 'Follow-up').all()
 
+
 def all_interview_by_job_applied_id(job_applied_id): 
     """Return all Interview question by job applied id."""   
     return Note.query.filter(Note.job_applied_id == job_applied_id, ((Note.note_category == 'Interview Question Technical') | (Note.note_category == 'Interview Question Informational') | (Note.note_category == 'Interview Question Behavioral'))).order_by(Note.note_category).all()
+
 
 def all_interview_by_user_id(user_id): 
     """Return all Interview question by job user id."""
@@ -167,16 +171,7 @@ def get_application_progress_by_id(app_progress_id):
 def get_user_job_detail(user_id):
     """ get a list of all the jobs a user applied"""
 
-    return JobDetail.query.filter(JobCompletedApplication.user_id == user_id).join(JobCompletedApplication).all()
-
-
-# def update_application_progress_state(job_applied_id):
-#     """ Update the created_at and application state of Application progress table once the user updates"""
-#     pass
-
-# def update_job_detail(job_id):
-#     """ Update the application state in the job details table once the user updates"""
-#     pass
+    return JobDetail.query.filter(JobCompletedApplication.user_id == user_id).join(JobCompletedApplication).order_by(JobCompletedApplication.application_date_submitted.desc()).all()
 
 
 def get_application_state_by_applied(job_applied_id):

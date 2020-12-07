@@ -11,11 +11,11 @@ class User(db.Model):
                         primary_key = True, 
                         autoincrement = True)
 
-    fname = db.Column(db.String(50),nullable=False)
+    fname = db.Column(db.String(50))
     lname = db.Column(db.String(50))
     email = db.Column(db.Text, unique = True,nullable=False)
     password = db.Column(db.String(200),nullable=False)
-    phone_number = db.Column(db.String ,nullable=False)
+    phone_number = db.Column(db.String)
     # to set any default parameters put default = xyz
 
     user_notes = db.relationship("Note")
@@ -126,7 +126,7 @@ class Event(db.Model):
     event_text = db.Column(db.Text)
     reminder_status = db.Column(db.String) 
     created_at = db.Column(db.DateTime)
-    # time_delta = db.Column(db.DateTime)
+    # time_delta = db.Column(db.DateTime) Future use
 
     event_user_id = db.relationship("User")
 

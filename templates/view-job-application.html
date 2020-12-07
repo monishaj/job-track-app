@@ -2,34 +2,56 @@
 
 {% block title %}View User Job Application{% endblock %}
 {% block header %}
+<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a id="job-track-app-logo" class="navbar-brand" href="/about">
 
-  <nav class="Navigation">
-    <a href="/profile">Profile</a>
-    <a href="/render-create-job-application-form">Create Job Application</a>
-    <a href="/metrics">Metrics</a>
-    <a href="/events">Events</a>
-    <a href="/logout">Logout</a>
-  </nav>
+    <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+    <strong>Job Track App</strong></a>  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/events"><i class="fa fa-bell"></i>Events</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout"><i class="fa fa-sign-out"></i>Logout</a>
+        </li>
+  </div>
+</nav>
+  
 
 {% endblock %}
 {% block body %} 
-    <h2>Hi {{ session['first_name']}},</h2> 
-    <h3>Your Job Application</h3> 
-    <div>
-      <table style="width:75%" >
-        
+<nav class="navbar-primary">
+  <ul class="navbar-primary-menu">
+    <li>
+      <a class="active" href="/view-job-application" aria-pressed="true"><span class="nav-label">View Job Application</span></a>
+      <a href="/render-create-job-application-form"><span class="nav-label">Create Job Application</span></a>
+      <a href="/all-interview-questions"><span class="nav-label">View Interview Questions</span></a>
+    </li>
+  </ul>
+</nav>
+<div class="container-fluid">
+    <h2 class="view-job-page ">Hi {{ session['first_name']}},</h2> 
+    <h3 class="view-job-page ">You have the following Job Application(s)</h3> 
+    <div class="table-container">
+      <table >
+        <thead>
         <tr>
           <th>Company Name</th>
           <th>Job Title</th>
           <th>Application Deadline</th>
-          <th>Job-listing-url</th>
+          <th>Job listing url</th>
           <th>State</th>
           <th>Application Status</th>
         </tr>
- 
+      </thead>
+      <tbody>
         {% for job in dictionary_jobs %}
           <tr>
-            <td><a href = "/job-application/{{dictionary_jobs[job]['job_id'][0]}}">{{ dictionary_jobs[job]['company_name'][0] }}</a></td>
+            <td><a class="anchor-button" href = "/view-job-application/{{dictionary_jobs[job]['job_id'][0]}}">{{ dictionary_jobs[job]['company_name'][0] }}</a></td>
             <td>{{dictionary_jobs[job]['job_title'][0]}}</td>
             <td>{{dictionary_jobs[job]['application_deadline'][0]}}</td>
             <td>{{dictionary_jobs[job]['job_listing_url'][0]}}</td>
@@ -37,8 +59,10 @@
             <td>{{dictionary_jobs[job]['app_state']}}</td>
       
           </tr>
-        {% endfor %}  
+        {% endfor %} 
+      </tbody> 
       </table>
     </div> 
+  </div>
 {% endblock %}
 

@@ -3,126 +3,187 @@
 {% block title %}View User Job Application{% endblock %}
 {% block header %}
 
-  <nav class="Navigation">
-    <a href="/profile">Profile</a>
-    <a href="/view-job-application">View Job Application</a>
-    <a href="/logout">Logout</a>
-   
-  </nav>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a id="job-track-app-logo" class="navbar-brand" href="/about">
+    <!-- Logo made using Logomaker -->
+    <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+    <strong>Job Track App</strong></a>  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/events"><i class="fa fa-bell"></i>Events</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout"><i class="fa fa-sign-out"></i>Logout</a>
+        </li>
+  </div>
+</nav>
+
 
 {% endblock %}
 {% block body %} 
-    <!-- <h3>Hi {{ session['first_name']}}</h3>  -->
-    <h2>Create Job Application</h2>
-    <div>
-        <h3>Enter Job Information</h3>
+<nav class="navbar-primary">
+    <ul class="navbar-primary-menu">
+      <li>
+        <a class="active" href="/view-job-application" aria-pressed="true"><span class="nav-label">View Job Application</span></a>
+        <a href="/render-create-job-application-form"><span class="nav-label">Create Job Application</span></a>
+        <a href="/all-interview-questions"><span class="nav-label">View Interview Questions</span></a>
+      </li>
+    </ul>
+  </nav>
+    <div class="job-container">
+      <div class="row header">
+        <h3 class="create-job-page ">Enter Job Information</h3>
+      </div>
+      <div class="row body">
         <form action="/create-job-application" method="POST">
-            <p>Company Name <input type="text" name="company_name" required></p>
-            <p>Job Title <input type="text" name="job_title" required></p>
-            <p>Deadline <input class="dates" type="datetime-local" name="deadline"></p>
-            <p>Listing url <input type="url" name="listing_url" placeholder="https://example.com"  size="30" pattern="http?://.*"></p>
-            <p>Listing date <input class="dates" type="datetime-local" name="application_listed"></p>
-            <p>Salary <select name="salary">
-               <option value = "30,000-50,000">30,000-50,000</option>
-               <option value = "50,000-70,000">50,000-70,000</option>
-               <option value = "70,000-90,000">70,000-90,000</option>
-               <option value = "90,000-110,000">90,000-110,000</option>
-               <option value = "110,000-130,000">110,000-130,000</option>
-               <option value = "130,000-150,000">130,000-150,000</option>
-               <option value = "150,000-170,000">150,000-170,000</option>
-               <option value = "170,000-190,000">170,000-190,000</option>
-               <option value = "190,000-250,000">190,000-250,000</option>
-               <option value = "250,000-300,000">250,000-300,000</option>
-               </select> 
-            </p>
-            <p>Application State <select name="application_state" required>
-                <option value = "Applied">Applied</option>
-                <option value = "Phone-interview">Phone-interview</option>
-                <option value = "Onsite-interview">Onsite-interview</option>
-                <option value = "Rejected">Rejected</option>
-                <option value = "Offer">Offer</option>
-                </select> 
-             </p>
-            <p>Location</p> 
-            <label>State</label>
-            <input type = "text" list="state" id = "state_list" name="state" required>
-            <datalist id="state">
-              <option value="Alabama"></option>
-              <option value="Alaska"></option>
-              <option value="Arizona"></option>
-              <option value="Arkansas"></option>
-              <option value="California"></option>
-              <option value="Colorado"></option>
-              <option value="Connecticut"></option>
-              <option value="Delaware"></option>
-              <option value="District of Columbia"></option>
-              <option value="Florida"></option>
-              <option value="Georgia"></option>
-              <option value="Hawaii"></option>
-              <option value="Idaho"></option>
-              <option value="Illinois"></option>
-              <option value="Indiana"></option>
-              <option value="Iowa"></option>
-              <option value="Kansas"></option>
-              <option value="Kentucky"></option>
-              <option value="Louisiana"></option>
-              <option value="Maine"></option>
-              <option value="Maryland"></option>
-              <option value="Massachusetts"></option>
-              <option value="Michigan"></option>
-              <option value="Minnesota"></option>
-              <option value="Mississippi"></option>
-              <option value="Missouri"></option>
-              <option value="Montana"></option>
-              <option value="Nebraska"></option>
-              <option value="Nevada"></option>
-              <option value="New Hampshire"></option>
-              <option value="New Jersey"></option>
-              <option value="New Mexico"></option>
-              <option value="New York"></option>
-              <option value="North Carolina"></option>
-              <option value="North Dakota"></option>
-              <option value="Ohio"></option>
-              <option value="Oklahoma"></option>
-              <option value="Oregon"></option>
-              <option value="Pennsylvania"></option>
-              <option value="Rhode Island"></option>
-              <option value="South Carolina"></option>
-              <option value="South Dakota"></option>
-              <option value="Tennessee"></option>
-              <option value="Texas"></option>
-              <option value="Utah"></option>
-              <option value="Vermont"></option>
-              <option value="Virginia"></option>
-              <option value="Washington"></option>
-              <option value="West Virginia"></option>
-              <option value="Wisconsin"></option>
-              <option value="Wyoming"></option>
-            </datalist>
+          <ul>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="company_name">Company Name<span class="req">*</span></label>
+                <input class="form-control col-md-12" cols="46" type="text" name="company_name" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="job_title">Job Title <span class="req">*</span></label>
+                <input class="form-control" type="text" name="job_title" required>
+              </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="deadline">Deadline</label>
+              <input class="form-control dates" type="datetime-local" name="deadline" >
+            </div>
+            <div class="form-group col-md-6">
+              <label for="listing_url">Listing url</label>
+              <input class="form-control dates" type="url" name="listing_url" placeholder="https://example.com"  size="30" pattern="http?://.*">
+            </div>
+        </div>
+        <div class="form-row">
+              <div class="form-group col-md-4">
+              <label for="listing_url">Listing date</label>
+              <input class="form-control dates" type="datetime-local" name="application_listed">
+            </div>
+              <div class="form-group col-md-4">
+                <label for="salary">Salary</label><br>
+                <select name="salary" class="form-control">
+                <option value = "30,000-50,000">30,000-50,000</option>
+                <option value = "50,000-70,000">50,000-70,000</option>
+                <option value = "70,000-90,000">70,000-90,000</option>
+                <option value = "90,000-110,000">90,000-110,000</option>
+                <option value = "110,000-130,000">110,000-130,000</option>
+                <option value = "130,000-150,000">130,000-150,000</option>
+                <option value = "150,000-170,000">150,000-170,000</option>
+                <option value = "170,000-190,000">170,000-190,000</option>
+                <option value = "190,000-250,000">190,000-250,000</option>
+                <option value = "250,000-300,000">250,000-300,000</option>
+                </select>
+              </div>
 
-            <label>City</label>
-            <input type="text" name="city">
+              <div class="form-group col-md-4">
+                <label for="application_state">Application Status<span class="req">*</span></label>
+                 <select name="application_state" class="form-control" required>
+                  <option value = "Applied">Applied</option>
+                  <option value = "Phone-interview">Phone-interview</option>
+                  <option value = "Onsite-interview">Onsite-interview</option>
+                  <option value = "Rejected">Rejected</option>
+                  <option value = "Offer">Offer</option>
+                  </select> 
+                </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="state">State<span class="req">*</span></label>
+                 <select name="state" class="form-control" required>
+                  <option value="Alabama">Alabama</option>
+                  <option value="Alaska">Alaska</option>
+                  <option value="Arizona">Arizona</option>
+                  <option value="Arkansas">Arkansas</option>
+                  <option value="California">California</option>
+                  <option value="Colorado">Colorado</option>
+                  <option value="Connecticut">Connecticut</option>
+                  <option value="Delaware">Delaware</option>
+                  <option value="District of Columbia">District of Columbia</option>
+                  <option value="Florida">Florida</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Hawaii">Hawaii</option>
+                  <option value="Idaho">Idaho</option>
+                  <option value="Illinois">Illinois</option>
+                  <option value="Indiana">Indiana</option>
+                  <option value="Iowa">Iowa</option>
+                  <option value="Kansas">Kansas</option>
+                  <option value="Kentucky">Kentucky</option>
+                  <option value="Louisiana">Louisiana</option>
+                  <option value="Maine">Maine</option>
+                  <option value="Maryland">Maryland</option>
+                  <option value="Massachusetts">Massachusetts</option>
+                  <option value="Michigan">Michigan</option>
+                  <option value="Minnesota">Minnesota</option>
+                  <option value="Mississippi">Mississippi</option>
+                  <option value="Missouri">Missouri</option>
+                  <option value="Montana">Montana</option>
+                  <option value="Nebraska">Nebraska</option>
+                  <option value="Nevada">Nevada</option>
+                  <option value="New Hampshire">New Hampshire</option>
+                  <option value="New Jersey">New Jersey</option>
+                  <option value="New Mexico">New Mexico</option>
+                  <option value="New York">New York</option>
+                  <option value="North Carolina">North Carolina</option>
+                  <option value="North Dakota">North Dakota</option>
+                  <option value="Ohio">Ohio</option>
+                  <option value="Oklahoma">Oklahoma</option>
+                  <option value="Oregon">Oregon</option>
+                  <option value="Pennsylvania">Pennsylvania</option>
+                  <option value="Rhode Island">Rhode Island</option>
+                  <option value="South Carolina">South Carolina</option>
+                  <option value="South Dakota">South Dakota</option>
+                  <option value="Tennessee">Tennessee</option>
+                  <option value="Texas">Texas</option>
+                  <option value="Utah">Utah</option>
+                  <option value="Vermont">Vermont</option>
+                  <option value="Virginia">Virginia</option>
+                  <option value="Washington">Washington</option>
+                  <option value="West Virginia">West Virginia</option>
+                  <option value="Wisconsin">Wisconsin</option>
+                  <option value="Wyoming">Wyoming</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+              <label for="city">City</label>
+              <input class="form-control" type="text" name="city">
+            </div>
+          </div>
+          <div class="form-row">
+                <div class="form-group col-md-6">
+                <label for="city">Note Category</label>
+                 <select name="note_category" class="form-control" >
+                  <option value = "Job Description">Job Description</option>
+                  <option value = "Follow-up">Follow-up</option>
+                  <option value = "Note">Note</option>
+                  <option value = "Interview Question Behavioral">Interview Question - Behavioral</option>
+                  <option value = "Interview Question Informational">Interview Question - Informational </option>
+                  <option value = "Interview Question Technical">Interview Question - Technical</option>
+                  <option value = "Recruiter Contact">Recruiter Contact</option>
+                  <option value = "Resume">Resume</option>
+                  </select> 
+                </div>
+              <div class="form-group col-md-6">
+              <label>Note Title</label>
+              <input type="text" class="form-control" name="note_title">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label>Note text</label>
+            <textarea class="form-control" name = "note_text"></textarea>
+          </div>
+            <li>
+              <button type="submit" class="btn btn-login float-right" >Create </button>
+            </li>
             
-            <p><label>Note</label></p>
-              <p>Note Category <select name="note_category" >
-                <option value = "Job Description">Job Description</option>
-                <option value = "Follow-up">Follow-up</option>
-                <option value = "Note">Note</option>
-                <option value = "Interview Question Behavioral">Interview Question - Behavioral</option>
-                <option value = "Interview Question Informational">Interview Question - Informational </option>
-                <option value = "Interview Question Technical">Interview Question - Technical</option>
-                <option value = "Recruiter Contact">Recruiter Contact</option>
-                <option value = "Resume">Resume</option>
-                </select> 
-             </p>
-             <p>
-                <label> Enter Note Title</label>
-                <input type="text" name="note_title"><br>
-                <label>Enter Note text</label>
-                <textarea name = "note_text"></textarea>
-                </p>
-              <input type="submit">
-            </p>
-          </form>
-    </div>  
+          </ul>
+        </form>  
+      </div>
+    </div>
 {% endblock %}

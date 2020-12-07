@@ -2,60 +2,110 @@
 
 {% block title %}All Interview Question{% endblock %}
 {% block header %}
-
-<nav class="Navigation">
-
-    <a href="/profile">Profile</a>
-    <a href="/render-create-job-application-form">Create Job Application</a>
-    <a href="/logout">Logout</a>
-
-</nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a id="job-track-app-logo" class="navbar-brand" href="/about">
+      <!-- Logo made using Logomaker -->
+      <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+      <strong>Job Track App</strong></a>  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/events"><i class="fa fa-bell"></i>Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout"><i class="fa fa-sign-out"></i>Logout</a>
+          </li>
+    </div>
+  </nav>
     
 {% endblock %}
 {% block body %} 
-<fieldset>
-    <legend> Interview Questions Behavioral</legend>
+<nav class="navbar-primary">
+    <ul class="navbar-primary-menu">
+      <li>
+        <a class="active" href="/view-job-application" aria-pressed="true"><span class="nav-label">View Job Application</span></a>
+        <a href="/render-create-job-application-form"><span class="nav-label">Create Job Application</span></a>
+        <a href="/all-interview-questions"><span class="nav-label">View Interview Questions</span></a>
+      </li>
+    </ul>
+  </nav>
+ 
+<div class="table-container-interview">
+  <div class="container-fluid">
+    <table >
+      <col style="width:30%">
+      <col style="width:70%">
+      <thead>
+      <tr>
+        <th>Behavioral Interview Questions </th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr><td><strong></strong></td><td><strong></strong></td></tr>
       {% for question in behavioral%}
-        <p>
-          <label>Title: </label>
-        {{behavioral[question]['note_title'][0]}}
-        </p>
-        
-        <p>
-           <label>Text: </label>
-          {{behavioral[question]['note_text']}}
-        </p>
+        <tr>
+          <td><strong>{{behavioral[question]['note_title'][0]}}</strong></a></td>
+          <td>{{behavioral[question]['note_text']}}</td>    
+        </tr>
+      {% endfor %} 
+      </tbody> 
+    </table>
+  </div> 
+</div>
+
+    <div class="table-container-interview">
+        <div class="container-fluid">
+      <table >
+        <col style="width:30%">
+        <col style="width:70%">
+        <thead>
+        <tr>
+          <th>Technical Interview Questions </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr><td><strong></strong></td><td><strong></strong></td></tr>
+        {% for question in technical%}
+          <tr>
+            <td><strong>{{technical[question]['note_title'][0]}}</strong></a></td>
+            <td>{{technical[question]['note_text']}}</td>    
+          </tr>
+        {% endfor %} 
+      </tbody> 
+      </table>
+    </div> 
+  </div>
+
+ 
+    <div class="table-container-interview">
+        <div class="container-fluid">
+      <table >
+        <col style="width:30%">
+        <col style="width:70%">
+        <thead>
+        <tr>
+          <th>Informational Interview Questions </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
   
-      {% endfor %}
-    </fieldset>
-    <fieldset>
-        <legend> Interview Questions Technical</legend>
-          {% for question in technical%}
-            <p>
-              <label>Title: </label>
-            {{technical[question]['note_title'][0]}}
-            </p>
-            
-            <p>
-               <label>Text: </label>
-              {{technical[question]['note_text']}}
-            </p>
-      
-          {% endfor %}
-        </fieldset>
-        <fieldset>
-            <legend> Interview Questions Informational</legend>
-              {% for question in informational%}
-                <p>
-                  <label>Title: </label>
-                {{informational[question]['note_title'][0]}}
-                </p>
-                
-                <p>
-                   <label>Text: </label>
-                  {{informational[question]['note_text']}}
-                </p>
-          
-              {% endfor %}
-            </fieldset>
-    {% endblock %}  
+        <tr><td><strong></strong></td><td><strong></strong></td></tr>
+        {% for question in informational%}
+          <tr>
+            <td><strong>{{informational[question]['note_title'][0]}}</strong></a></td>
+            <td>{{informational[question]['note_text']}}</td>    
+          </tr>
+        {% endfor %} 
+      </tbody> 
+      </table>
+    </div> 
+  </div>
+
+{% endblock %}  

@@ -3,20 +3,52 @@
 {% block title %}About Page{% endblock %}
 {% block header %}
 
-<nav class="Navigation">
-    <a href="/demo">Demo</a>
-    <a href="/">Homepage</a>
-</nav>
-    
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a id="job-track-app-logo" class="navbar-brand" href="/about">
+    <!-- Logo made using Logomaker -->
+    <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+  <strong>Job Track App</strong></a>  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="fa fa-home" aria-hidden="true"></i>Home</a>
+        </li>
+  </div>
+</nav>    
 
 {% endblock %}
 {% block body %}
-<div>
-    <img src="/static/img/agreement.jpg" alt="shake hand" style="width: 40%;">
-  </div>  
-<h3>
- Job-Track-App helps you Stay Organized and Increase Productivity.Organizing and tracking job application has never been so easy. With Job Track App you can stay on top of your next career challenge while we do the heavy lifting of systematizing job applications for you so that you can focus more on what is important.
-</h3>
 
-    
+<section class="login-block">
+<div class="d-flex justify-content-center section-row">
+  <img class="section-row__image mx-auto" src="/static/img/agreement.jpg">
+  <div class=" section-row__content">
+    <div class="section-row__content-inner ">
+      <h1 style="color: #E36262; text-align: left" >Join Job Track App Today!</h1>
+      <p>Job Track App is a personalized web application that offers you the ability to keep track of your job applications and their progress in the course of interviewing.</p>
+      <p>The application helps you categorize notes into an efficient system and provide a quick and detailed look at all of your job applications. </p>
+      <p>Need to send yourself an event reminder? This unique job application tracker allows you to send custom event notifications straight to your phone! </p>
+      <p>Too good to be true? Try our platform today and experience the difference!</p>
+    </div>
+  </div>
+</div>
+<footer id="my-footer" class="text-center page-footer font-small "></footer>
+<div class="container-fluid text-center">
+  <div class="row social text-center">
+    <div class="col-md-12 py-5">
+      <div class= "mb-5 flex-center"></div>
+         <a href="https://twitter.com/monishajacob" target="_blank"><i class="fa fa-twitter"></i></a>
+        <a href="https://www.linkedin.com/in/monishajacob/" target="_blank"><i class="fa fa-linkedin"></i></a>
+         <a href="mailto:monishacherian@gmail.com" target="_blank"><i class="fa fa-envelope"></i></a>
+        <a href="https://github.com/monishaj" target="_blank"><i class="fa fa-github"></i></a>
+      <!-- </ul> -->
+    </div><!--//mb-5 flex-center-->
+    </div><!--//col-md-12 py-5-->  
+  </div><!--//row-->
+ </div> <!--container-fluid -->
+</footer>
+</section>   
 {% endblock %}

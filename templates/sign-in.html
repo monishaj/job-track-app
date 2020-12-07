@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Home Page{% endblock %}
+
+
+{% block header %} 
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a id="job-track-app-logo" class="navbar-brand" href="/about">
+    <!-- Logo made using Logomaker -->
+    <img src="/static/img/job.png" width="30" height="30" alt="job-tracking-logo" loading="lazy">
+    <strong>Job Track App</strong></a>  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+          <a class="nav-link" href="/about"><i class="fa fa-info-circle"></i>About</a>
+        </li>
+  </div>
+</nav>
+
+{% endblock %}
+{% block body %}
+<section class="login-block">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 login-sec">
+        <h2 class="text-center">Login</h2>
+        <form class="login-form" action="/" method="POST">
+          <div class="form-group">
+
+            <label for="exampleInputEmail1" class="text-uppercase">Email</label>
+            <input type="email" class="form-control" name="email" maxlength="50" placeholder="test@test.com" size="25" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1" class="text-uppercase">Password</label>
+            <input type="password" class="form-control" name="password" maxlength="25" size="15" required>
+          </div>
+          <div class="form-check">
+            <button type="submit" class="btn btn-login float-right">Submit</button>
+          </div>
+
+        </form>
+<div class="copy-text">Create an account  <a href="/">Sign Up</a></div>
+  </div>
+  <div class="col-md-8 banner-sec">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+               <ol class="carousel-indicators">
+                  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+          <div class="carousel-inner" role="listbox">
+  <div class="carousel-item active">
+    <img class="d-block img-fluid" src="https://static.pexels.com/photos/33972/pexels-photo.jpg" alt="First slide">
+    <div class="carousel-caption d-none d-md-block">
+      <div class="banner-text">
+          <h2>Job Track App</h2>
+          <p><strong>Stay Organized and Increase Productivity</strong></p>
+      </div>  
+</div>
+  </div>
+  <div class="carousel-item">
+    <img class="d-block img-fluid" src="/static/img/laptop.jpg" style="width:100%; height:300px !important;" alt="First slide">
+    <div class="carousel-caption d-none d-md-block">
+      <div class="banner-text">
+          <h2>Job Track App</h2>
+          <p><strong>Organizing and tracking job application has never been so easy. With Job Track App you can stay on top of your next career challenge while we do the heavy lifting of systematizing job applications for you so that you can focus more on what is important</strong></p>
+      </div>  
+  </div>
+  </div>
+  <div class="carousel-item">
+    <img class="d-block img-fluid" src="https://images.pexels.com/photos/872957/pexels-photo-872957.jpeg" alt="First slide">
+    <div class="carousel-caption d-none d-md-block">
+      <div class="banner-text">
+          <h2>Job Track App</h2>
+          <p><strong>Your Next Career Challenge Awaits!</strong></p>
+      </div>  
+  </div>
+</div>
+          </div>     
+      
+  </div>
+</div>
+  </div>
+</section>
+   
+    
+{% endblock %}

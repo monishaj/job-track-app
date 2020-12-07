@@ -2,15 +2,15 @@
 from flask import Flask, render_template, request, flash, session, redirect
 from model import connect_to_db, db , User
 import crud
-# from flask_login import LoginManager
 from jinja2 import StrictUndefined
 from datetime import datetime
 from twilio.rest import Client
 import os
 import requests
+# from pytz import timezone
+# from tzlocal import get_localzone
 
 app = Flask(__name__)
-# login = LoginManager(app)
 app.secret_key = "job_track_app"
 app.jinja_env.undefined = StrictUndefined
 
@@ -21,11 +21,13 @@ def homepage():
 
     return render_template('homepage.html')
 
+
 @app.route('/about')
 def about():
     """Show About page"""
 
     return render_template('about.html')
+
 
 @app.route('/demo')
 def demo():
@@ -33,9 +35,11 @@ def demo():
 
     return render_template('demo.html')    
 
+
 @app.route('/sign-in')
 def signin():
     return render_template('sign-in.html')
+
 
 @app.route('/', methods=['POST'])
 def set_user():
@@ -53,24 +57,28 @@ def set_user():
         
         if user.check_password(password) == False:
             flash('Incorrect Password. Try again.')
-            return redirect('/')
+            return render_template('sign-in.html')
         else:
             session['user_id'] = user.user_id
             session['first_name'] = user.fname
             session['email'] = user.email
             flash('Sucessfully Logged In.')
-            return render_template('view.html')
-            
+            return redirect('/view-job-application')
+
     else:
-        new_user = crud.create_user(fname, lname, email, password, phone_number)
-        flash('Account created! Logged In.')
+        if fname!=None and phone_number!=None:
+            new_user = crud.create_user(fname, lname, email, password, phone_number)
+            flash('Account created! Logged In.')
+        else:
+            flash('User not Found. Please create a user')
+            return redirect('/')
         
         #saving the user to the session
         session['user_id'] = new_user.user_id
         session['first_name'] = new_user.fname
         session['email'] = new_user.email
 
-        return render_template('view.html')
+        return redirect('/view-job-application')
 
 
 @app.route('/profile')
@@ -89,6 +97,7 @@ def user_profile():
     }
     return user_details
 
+
 @app.route('/logout')
 def logout():
     """User log-out"""  
@@ -98,7 +107,6 @@ def logout():
     session.pop('email', None)
     flash('Logged Out')
     return redirect('/')
-
 
 
 @app.route('/view' , methods = ['GET', 'POST'])
@@ -119,7 +127,7 @@ def view_page():
 @app.route('/view-job-application')
 def job_application():
     """View All Job Application of a user """
-
+    
     user = crud.get_user_by_email(session['email'])
     user_id = user.user_id
     job_detail = crud.get_user_job_detail(user_id)
@@ -133,25 +141,18 @@ def job_application():
         dictionary_jobs[index]['job_listing_url'] = job.job_listing_url ,
         dictionary_jobs[index]['state'] = job.state,
         dictionary_jobs[index]['app_state'] = crud.get_application_state_by_applied(job.job_completed_applications[0].job_applied_id).application_state
-        # job_description['app_state'] = job.job_completed_applications[0].job_application_progress[-1].application_state
 
     return render_template('view-job-application.html', dictionary_jobs=dictionary_jobs)
 
 
-@app.route('/job-application/<job_id>')
-def render_job_application(job_id):
-    session['job_id'] = job_id
-    return render_template('job-application.html')
-
-
-@app.route('/view-job-application/<job_id>')
+@app.route('/view-job-application/<job_id>', methods=['POST', 'GET'])
 def get_job_details(job_id):
+    session['job_id'] = job_id
     """ Display extended job details"""
     print("job_id:",job_id)
     user = crud.get_user_by_email(session['email'])
     user_id = user.user_id
     print("user_id:",user_id)
-    # user_id = 11
     job_detail = crud.get_user_job_detail(user_id)
     job_applied_id = crud.get_job_applied_by_job_id(job_id)
     dictionary_jobs = {}
@@ -175,33 +176,25 @@ def get_job_details(job_id):
     
     for index, note in enumerate(notes_list):
         note_dictionary[index] = {}
-        # note_dictionary[index]['note_category'] = note.note_category,
         note_dictionary[index]['note_title'] = note.note_title,
         note_dictionary[index]['note_text'] = note.note_text
-    # print("dictionary_jobs::",dictionary_jobs)
-    # print(note_dictionary)
+   
     note_job_description = crud.all_jd_by_job_applied_id(job_applied_id)
+    print(note_job_description)
     note_jd = {}
-    for index, note in enumerate(note_job_description):
-        note_jd[index] = {}
-        note_jd[index]['note_title'] = note.note_title,
-        note_jd[index]['note_text'] = note.note_text
+   
+    if note_job_description!= None:
+        note_jd[1] = {}
+        note_jd[1]['note_title'] = note_job_description.note_title,
+        note_jd[1]['note_text'] = note_job_description.note_text
     note_recruit = crud.all_recruiter_by_job_applied_id(job_applied_id)
     note_recruiter = {}
     for index, note in enumerate(note_recruit):
         note_recruiter[index] = {}
         note_recruiter[index]['note_title'] = note.note_title,
         note_recruiter[index]['note_text'] = note.note_text
-    
 
-    
-    return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary, note_jd= note_jd, note_recruiter = note_recruiter )
-
-
-@app.route('/resources/<job_id>')
-def get_resources(job_id):
-    """ get resources of a particular job application"""
-    job_applied_id = crud.get_job_applied_by_job_id(job_id)
+    # changes 
     note_resumes = crud.all_resume_by_job_applied_id(job_applied_id)
     note_resume = {}
     for index, note in enumerate(note_resumes):
@@ -217,58 +210,33 @@ def get_resources(job_id):
         note_followup[index]['note_title'] = note.note_title,
         note_followup[index]['note_text'] = note.note_text
     
-    return render_template('resources.html' , note_resume =note_resume , note_followup=note_followup)
-
- 
-@app.route('/interview-questions/<job_id>')
-def get_interview_questions(job_id):
-    """ get interview questions of a particular job application"""
-    """ get resources of a particular job application"""
-    job_applied_id = crud.get_job_applied_by_job_id(job_id)
-    note_interviewqs = crud.all_interview_by_job_applied_id(job_applied_id)
+    note_interviews = crud.all_interview_by_job_applied_id(job_applied_id)
     note_interview_question = {}
-    for index, note in enumerate(note_interviewqs):
+    for index, note in enumerate(note_interviews):
         note_interview_question[index] = {}
         note_interview_question[index]['note_category'] = note.note_category,
         note_interview_question[index]['note_title'] = note.note_title,
         note_interview_question[index]['note_text'] = note.note_text
-    
-    return render_template('interview-questions.html' , note_interview_question =note_interview_question )
-   
 
-@app.route('/update-fields/<job_id>' , methods=['POST', 'GET'])
-def update_fileds(job_id):
-    """ Update Fields of a particular job application"""
-    job_applied_id = crud.get_job_applied_by_job_id(job_id)
     created_at = datetime.now()
-    user_id = session['user_id']
     note_date_created = datetime.now()
-    if request.method == 'GET':
-        return render_template('update-fields.html')
-    else:
-        application_state = request.form.get('application_state')
-        note_category = request.form.get('note_category')
-        note_title = request.form.get('note_title')
-        note_text = request.form.get('note_text')
+    application_state = request.form.get('application_state')
+    note_category = request.form.get('note_category')
+    note_title = request.form.get('note_title')
+    note_text = request.form.get('note_text')
 
-        if application_state:
-            application_progress = crud.create_application_progress(application_state, job_applied_id , created_at)
-        if note_category:
-            note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created)
-    template =  f'/view-job-application/{job_id}'       
-    return redirect(template)
-
-
-
-
-
+    if application_state:
+        application_progress = crud.create_application_progress(application_state, job_applied_id , created_at)
+    if note_category:
+        note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created)
     
+    return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary, note_jd= note_jd, note_recruiter = note_recruiter ,note_resume =note_resume , note_followup=note_followup,note_interview_question =note_interview_question)
+  
 
 @app.route('/create-job-application', methods=['POST'])
 def create_job_application():
     """Create a job application """
 
-    # if request.method == 'POST':
     user = crud.get_user_by_email(session['email'])
     user_id = user.user_id
 
@@ -306,19 +274,16 @@ def create_job_application():
 
     return redirect('/view-job-application')
     
-    # else:
-    #     return render_template('create-job-application.html')
-
 
 @app.route('/render-create-job-application-form')
 def render_create_job():
     """Rendering create job application template """
     return render_template('create-job-application.html')
 
+
 @app.route('/all-interview-questions')
 def all_interview_questions():
     """ Return all the Interview questions of every job the user applied"""
-    # user_id = 11
     user_id = session['user_id']
     interview_objects = crud.all_interview_by_user_id(user_id)
     behavioral = {}
@@ -331,7 +296,6 @@ def all_interview_questions():
             behavioral[index]['note_title'] = note.note_title,
             behavioral[index]['note_text'] = note.note_text
             
-
         elif note.note_category == 'Interview Question Technical':
             technical[index] = {}
             technical[index]['note_title'] = note.note_title,
@@ -347,28 +311,30 @@ def all_interview_questions():
 
     return render_template('all-interview-questions.html',behavioral=behavioral, technical = technical,informational=informational  )
 
+
 @app.route('/events' , methods = ['GET','POST'])
 def events():
     """Rendering event template """
-    # if request.method == 'GET':
-    #     return render_template('events.html',event_dict=event_dict)
-    # else:
+ 
     user = crud.get_user_by_email(session['email'])
     user_id = user.user_id 
     phone = user.phone_number
 
     event_title = request.form.get('event_title')
     event_text = request.form.get('reminder_text')
-    event_time = request.form.get('event-time')
-    reminder_status = request.form.get('reminder')
+    # event_time = request.form.get('event-time') #for future use 
+    event_time = datetime.now()
+    # created_at = event_time.astimezone(get_localzone())
+    # reminder_status = request.form.get('reminder')
+    reminder_status="Sent"
     print('reminder_status',reminder_status)
 
-    if event_time:
-        created_at = datetime.strptime(event_time, "%Y-%m-%dT%H:%M")
-        event = crud.create_event(user_id,event_title,event_text,reminder_status, created_at)
-
+    # if event_time:  #for future use 
+    #   created_at = datetime.strptime(str(event_time), "%Y-%m-%d %H:%M:%S.%f")
+    #     event = crud.create_event(user_id,event_title,event_text,reminder_status, created_at)
+    event = crud.create_event(user_id,event_title,event_text,reminder_status, event_time)
     if reminder_status == 'Yes':
-        print('yes************************************')
+        print('For testing: ******************yes******************')
         # twilio(phone,event_text)
 
     event_dict = {}
