@@ -1,4 +1,5 @@
-from model import db, User, JobDetail, JobCompletedApplication, Note, connect_to_db, ApplicationProgress, Event
+from model import (ApplicationProgress, Event, JobCompletedApplication,
+                   JobDetail, Note, User, connect_to_db, db)
 
 
 def create_user(fname, lname, email, password, phone_number):

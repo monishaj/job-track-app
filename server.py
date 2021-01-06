@@ -1,14 +1,14 @@
 """ Server for Job Track App """
-from flask import Flask, render_template, request, flash, session, redirect
-from model import connect_to_db, db , User
-import crud
-from jinja2 import StrictUndefined
-from datetime import datetime
-from twilio.rest import Client
 import os
+from datetime import datetime
+
 import requests
-# from pytz import timezone
-# from tzlocal import get_localzone
+from flask import Flask, flash, redirect, render_template, request, session
+from jinja2 import StrictUndefined
+from twilio.rest import Client
+
+import crud
+from model import User, connect_to_db, db
 
 app = Flask(__name__)
 app.secret_key = "job_track_app"
@@ -26,18 +26,12 @@ def homepage():
 def about():
     """Show About page"""
 
-    return render_template('about.html')
-
-
-@app.route('/demo')
-def demo():
-    """Show Demo page"""
-
-    return render_template('demo.html')    
+    return render_template('about.html')  
 
 
 @app.route('/sign-in')
 def signin():
+    """Show sign-in page"""
     return render_template('sign-in.html')
 
 
@@ -81,23 +75,6 @@ def set_user():
         return redirect('/view-job-application')
 
 
-@app.route('/profile')
-def user_profile():
-    """Return the users profile """
-    user_id = session.get('user_id', None)
-    user = crud.get_user_by_email(session['email'])
-    if user_id == None:
-        user_details = {'logged_in': 'no'}
-    else:    
-        user_details = {
-            'user_id': user_id,
-            'first_name':user.fname,
-            'lname':user.lname,
-            'logged_in': 'yes',
-    }
-    return user_details
-
-
 @app.route('/logout')
 def logout():
     """User log-out"""  
@@ -107,21 +84,6 @@ def logout():
     session.pop('email', None)
     flash('Logged Out')
     return redirect('/')
-
-
-@app.route('/view' , methods = ['GET', 'POST'])
-def view_page():
-    """Show view page"""  
-
-    view_job_app = request.form['job-application']
-    print('************************************')
-    print("view_job_app is ****************",view_job_app)
-    if view_job_app == 'view-job-application':
-        return redirect('/view-job-application')
-    elif view_job_app == 'view-interview-questions':
-        return redirect('/all-interview-questions')    
-    else:
-        return redirect('/render-create-job-application-form')
 
 
 @app.route('/view-job-application')
@@ -225,10 +187,15 @@ def get_job_details(job_id):
     note_title = request.form.get('note_title')
     note_text = request.form.get('note_text')
 
+
     if application_state:
         application_progress = crud.create_application_progress(application_state, job_applied_id , created_at)
+        template =  f'/view-job-application/{job_id}'
+        return redirect(template)
     if note_category:
         note = crud.create_note(job_applied_id, user_id, note_title, note_text, note_category, note_date_created)
+        template =  f'/view-job-application/{job_id}'
+        return redirect(template)
     
     return render_template('view-application-details.html', dictionary_jobs = dictionary_jobs ,note_dictionary = note_dictionary, note_jd= note_jd, note_recruiter = note_recruiter ,note_resume =note_resume , note_followup=note_followup,note_interview_question =note_interview_question)
   
@@ -332,10 +299,11 @@ def events():
     # if event_time:  #for future use 
     #   created_at = datetime.strptime(str(event_time), "%Y-%m-%d %H:%M:%S.%f")
     #     event = crud.create_event(user_id,event_title,event_text,reminder_status, created_at)
-    event = crud.create_event(user_id,event_title,event_text,reminder_status, event_time)
-    if reminder_status == 'Yes':
-        print('For testing: ******************yes******************')
-        # twilio(phone,event_text)
+    if request.method == "POST":
+        event = crud.create_event(user_id,event_title,event_text,reminder_status, event_time)
+        if reminder_status == 'Sent':
+            print('For testing: ******************yes******************')
+            # twilio(phone,event_text)
 
     event_dict = {}
 

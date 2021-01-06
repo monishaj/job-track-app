@@ -38,7 +38,7 @@
     {% block head %}{% endblock %}
   </head>
   <body>
-    <div class="toast-body">
+    <div class="toast-body" role="alert">
       {% for msg in get_flashed_messages() %}
         
         <span text-align: center;>{{ msg }}</span>

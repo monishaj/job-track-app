@@ -1,7 +1,8 @@
-import os
-import json
-from random import choice, randint
 import datetime
+import json
+import os
+from random import choice, randint
+
 from faker import Faker
 
 import crud

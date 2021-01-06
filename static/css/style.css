@@ -26,14 +26,15 @@ padding : 50px 0;
 .banner-text p{color: black;}
 /* Carousel base class  */
 
-.toast-body {
-  color: #DE6262;
+.toast-body span{
+  margin-top: auto;
+  color: white;
     display: block;
     font-size: 1.5em;
     font-weight: bold;
     letter-spacing: 0.025em;
     text-align: center;
-    background-color: none;
+    /* background-color: none; */
 }
 
 
@@ -252,14 +253,14 @@ a.anchor-button:visited {
   margin-bottom: 30px;
 	left: 15.5%; /* centering the table */
 	justify-content:center;
-  height:500px;
+  height:300px;
   overflow-y:scroll;}
 
 .table-container-interview{
     position: relative;
     justify-content:center;
     overflow-y:scroll;
-    height:200px;
+    height:300px;
     margin: 50px auto;
     left: 15.5%;
     
@@ -295,6 +296,7 @@ th {
         font-size: 17px;
         color: black;
         text-transform: uppercase;
+        
 }
 
 
@@ -303,7 +305,7 @@ tbody>tr:hover {
            
 		}
 tbody {
-    height:300px;
+    height:200px;
     overflow-x:auto;
     margin-top: 0px;
     border: 1px solid rgba(255,255,255,0.3);
@@ -436,7 +438,7 @@ form >ul>li {
 #jd{
   width: 500px;
     height: 150px;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 .upper{
   text-transform: uppercase;
